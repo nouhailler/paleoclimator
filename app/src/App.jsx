@@ -540,6 +540,10 @@ class PaleoApp extends React.Component {
   equirect(polys, W, H) { return (polys || []).map(poly => poly.map((p, i) => `${i ? 'L' : 'M'}${(((p[0] + 180) / 360) * W).toFixed(1)} ${(((90 - p[1]) / 180) * H).toFixed(1)}`).join(' ') + ' Z').join(' '); }
   // Graticule (méridiens tous les 30°, parallèles tous les 30°).
   graticule(W, H) { let d = ''; for (let lng = -150; lng <= 150; lng += 30) { const x = (((lng + 180) / 360) * W).toFixed(1); d += `M${x} 0L${x} ${H}`; } for (let lat = -60; lat <= 60; lat += 30) { const y = (((90 - lat) / 180) * H).toFixed(1); d += `M0 ${y}L${W} ${y}`; } return d; }
+  // Test point-dans-polygone (lng,lat) par lancer de rayon.
+  pointInPoly(x, y, poly) { let inside = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1]; if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / ((yj - yi) || 1e-9) + xi)) inside = !inside; } return inside; }
+  // État d'un lieu à une époque : sous la glace, terre émergée, ou sous l'eau.
+  regionState(lng, lat, lands, ice) { if ((ice || []).some(p => this.pointInPoly(lng, lat, p))) return 'ice'; if ((lands || []).some(p => this.pointInPoly(lng, lat, p))) return 'land'; return 'sea'; }
   presentLands = [
     [[-168,66],[-158,71],[-130,70],[-95,72],[-82,73],[-64,60],[-70,47],[-81,43],[-81,25],[-97,26],[-107,24],[-117,32],[-124,40],[-124,48],[-138,58],[-152,59],[-168,66]],
     [[-45,60],[-22,70],[-20,76],[-32,83],[-52,82],[-55,76],[-50,68],[-45,60]],
@@ -1577,9 +1581,12 @@ class PaleoApp extends React.Component {
     // paleogeographic maps
     const { mapPeriod, reveal, pinX, pinY, pinLabel } = this.state;
     const periods = {
-      pangea: { label: 'Pangée', age: '≈ 250 Ma', note: "À la limite Permien–Trias, les continents sont soudés en un supercontinent unique, la Pangée, ceinturé par l'océan Panthalassa. Climat de type serre, saisons continentales extrêmes, aucune calotte polaire pérenne.", pin: "se trouvait soudée aux autres terres au cœur de la Pangée — souvent loin de tout littoral." },
-      cretaceous: { label: 'Crétacé', age: '≈ 90 Ma', note: "L'Atlantique s'ouvre et la Téthys sépare les masses continentales. Le niveau marin culmine (~+250 m) : de vastes mers épicontinentales inondent les continents. Pôles sans glace, climat chaud.", pin: "bordait probablement des mers chaudes et peu profondes, sous un climat sans glace polaire." },
-      lgm: { label: 'Dernier Maximum Glaciaire', age: '≈ 21 ka', note: "Géographie quasi moderne, mais d'immenses calottes (Laurentide, Fennoscandienne) recouvrent l'Amérique du Nord et l'Europe du Nord. Le niveau marin ~120 m plus bas exonde la Manche et la Béringie.", pin: "connaissait un climat glaciaire ; les plateaux continentaux proches étaient souvent émergés." }
+      pangea: { label: 'Pangée', age: '≈ 250 Ma', note: "À la limite Permien–Trias, les continents sont soudés en un supercontinent unique, la Pangée, ceinturé par l'océan Panthalassa. Climat de type serre, saisons continentales extrêmes, aucune calotte polaire pérenne.", pin: "se trouvait soudée aux autres terres au cœur de la Pangée — souvent loin de tout littoral.",
+        st: { land: "Terre émergée — au cœur aride de la Pangée", sea: "Sous l'océan mondial Panthalassa", ice: "Sous une calotte polaire" } },
+      cretaceous: { label: 'Crétacé', age: '≈ 90 Ma', note: "L'Atlantique s'ouvre et la Téthys sépare les masses continentales. Le niveau marin culmine (~+250 m) : de vastes mers épicontinentales inondent les continents. Pôles sans glace, climat chaud.", pin: "bordait probablement des mers chaudes et peu profondes, sous un climat sans glace polaire.",
+        st: { land: "Terre émergée, climat chaud sans glace", sea: "Sous une mer épicontinentale chaude", ice: "Sous la glace" } },
+      lgm: { label: 'Dernier Maximum Glaciaire', age: '≈ 21 ka', note: "Géographie quasi moderne, mais d'immenses calottes (Laurentide, Fennoscandienne) recouvrent l'Amérique du Nord et l'Europe du Nord. Le niveau marin ~120 m plus bas exonde la Manche et la Béringie.", pin: "connaissait un climat glaciaire ; les plateaux continentaux proches étaient souvent émergés.",
+        st: { land: "Toundra / steppe périglaciaire", sea: "En mer (niveau ~120 m plus bas)", ice: "Sous la calotte — ~1 à 3 km de glace" } }
     };
     const per = periods[mapPeriod];
 
@@ -1597,6 +1604,14 @@ class PaleoApp extends React.Component {
       cretaceous: { lands: this.globePeriods[2].lands, ice: this.globePeriods[2].ice, ocean: this.globePeriods[2].ocean, land: this.globePeriods[2].land },
       lgm: { lands: this.presentLands, ice: lgmIce, ocean: '#2b6a8a', land: '#7e8c56' }
     }[mapPeriod];
+
+    // Zoom « Votre région » : état du lieu sous le repère (terre / mer / glace), aujourd'hui vs à l'époque.
+    const pinLng = (pinX / 100) * 360 - 180;
+    const pinLat = 90 - (pinY / 100) * 180;
+    const rgnTodaySt = this.regionState(pinLng, pinLat, gpToday.lands, gpToday.ice);
+    const rgnEpochSt = this.regionState(pinLng, pinLat, mapCfg.lands, mapCfg.ice);
+    const stEmoji = { ice: '❄️', sea: '🌊', land: '⛰️' };
+    const stTodayPhrase = { ice: "Sous la glace (calotte actuelle)", land: "Terre émergée", sea: "En mer" };
 
     // proxies gallery
     const { proxy, grow, playing } = this.state;
@@ -2099,6 +2114,15 @@ class PaleoApp extends React.Component {
       mapTodayLand: this.equirect(gpToday.lands, MW, MH), mapTodayIce: this.equirect(gpToday.ice, MW, MH),
       mapPeriodOcean: mapCfg.ocean, mapPeriodLandCol: mapCfg.land,
       mapPeriodLand: this.equirect(mapCfg.lands, MW, MH), mapPeriodIce: this.equirect(mapCfg.ice, MW, MH),
+      // zoom « Votre région » (coupe)
+      rgnLatLng: `${Math.abs(pinLat).toFixed(0)}°${pinLat >= 0 ? 'N' : 'S'} · ${Math.abs(pinLng).toFixed(0)}°${pinLng >= 0 ? 'E' : 'O'}`,
+      rgnEpochIce: rgnEpochSt === 'ice', rgnEpochSea: rgnEpochSt === 'sea', rgnEpochLand: rgnEpochSt === 'land',
+      rgnTodayIce: rgnTodaySt === 'ice', rgnTodaySea: rgnTodaySt === 'sea', rgnTodayLand: rgnTodaySt === 'land',
+      rgnEpochEmoji: stEmoji[rgnEpochSt], rgnTodayEmoji: stEmoji[rgnTodaySt],
+      rgnEpochPhrase: per.st[rgnEpochSt], rgnTodayPhrase: stTodayPhrase[rgnTodaySt],
+      rgnEpochOcean: mapCfg.ocean, rgnEpochLandCol: mapCfg.land,
+      rgnTodayOcean: gpToday.ocean, rgnTodayLandCol: gpToday.land,
+      rgnSame: rgnEpochSt === rgnTodaySt,
       handleStyle: { position: 'absolute', top: 0, bottom: 0, left: `${reveal}%`, width: 2, background: '#fff', boxShadow: '0 0 5px rgba(0,0,0,.45)', transform: 'translateX(-1px)', pointerEvents: 'none', zIndex: 15 },
       handleGripStyle: { position: 'absolute', top: '50%', left: `${reveal}%`, transform: 'translate(-50%,-50%)', width: 30, height: 30, borderRadius: '50%', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f2c3c', fontSize: 13, pointerEvents: 'none', zIndex: 16 },
       pinStyle: { position: 'absolute', left: `${pinX}%`, top: `${pinY}%`, transform: 'translate(-50%,-100%)', zIndex: 20, cursor: 'grab', touchAction: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' },

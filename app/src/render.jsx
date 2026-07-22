@@ -415,6 +415,75 @@ export function renderApp(v, self) {
           <span>{v.mapPeriodLabel}</span><span>aujourd'hui</span>
         </div>
 
+
+        <div style={css(`margin-top:16px;display:flex;align-items:baseline;justify-content:space-between;gap:8px`)}>
+          <div style={css(`font-family:'Spectral',serif;font-size:15px;font-weight:600`)}>📍 Votre région · coupe (~100 km)</div>
+          <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#8aa5b3`)}>{v.rgnLatLng}</div>
+        </div>
+        <div style={css(`font-size:11px;line-height:1.45;color:#4d6c7d;margin-top:3px;margin-bottom:9px`)}>Même curseur : glissez pour comparer l'état du sol sous le repère, hier et aujourd'hui.</div>
+
+        <div style={css(`position:relative;width:100%;aspect-ratio:5 / 2;border-radius:12px;overflow:hidden;border:1px solid #cfe0e8;background:#dbe7ec`)}>
+
+          <svg viewBox="0 0 220 120" preserveAspectRatio="none" style={css(`position:absolute;inset:0;width:100%;height:100%;display:block`)}>
+            <rect x="0" y="0" width="220" height="120" fill={v.rgnTodayIce ? '#d7e6ef' : v.rgnTodaySea ? '#bcdcec' : '#cfe6f2'}></rect>
+            <rect x="0" y="98" width="220" height="22" fill="#6d5a44"></rect>
+            { v.rgnTodayLand ? (<>
+              <path d="M0 98 Q60 84 120 90 T220 92 L220 98 Z" fill="#6f9a55"></path>
+              <g stroke="#4f7d53" strokeWidth="2" strokeLinecap="round"><path d="M40 90 v-8 M45 90 v-11 M50 90 v-8 M168 92 v-8 M173 92 v-11 M178 92 v-8"></path></g>
+            </>) : null }
+            { v.rgnTodaySea ? (<>
+              <rect x="0" y="52" width="220" height="46" fill={v.rgnTodayOcean} opacity="0.92"></rect>
+              <path d="M0 54 Q30 49 60 54 T120 54 T180 54 T240 54" fill="none" stroke="#eaf7fd" strokeWidth="1.5" opacity="0.7"></path>
+              <circle cx="150" cy="76" r="3" fill="#eaf7fd" opacity="0.65"></circle>
+            </>) : null }
+            { v.rgnTodayIce ? (<>
+              <rect x="0" y="40" width="220" height="58" fill="#eef7fb"></rect>
+              <path d="M0 44 Q40 38 90 43 T220 42 L220 40 L0 40 Z" fill="#ffffff"></path>
+              <g stroke="#c4d7e0" strokeWidth="1.2" opacity="0.8"><path d="M60 40 v56 M120 40 v56 M175 40 v56"></path></g>
+            </>) : null }
+            <line x1="110" y1="0" x2="110" y2="120" stroke="#0f2c3c" strokeWidth="1" strokeDasharray="3 3" opacity="0.55"></line>
+          </svg>
+
+
+          <div style={v.overlayClipStyle}>
+            <svg viewBox="0 0 220 120" preserveAspectRatio="none" style={css(`position:absolute;inset:0;width:100%;height:100%;display:block`)}>
+              <rect x="0" y="0" width="220" height="120" fill={v.rgnEpochIce ? '#d7e6ef' : v.rgnEpochSea ? '#bcdcec' : '#cfe6f2'}></rect>
+              <rect x="0" y="98" width="220" height="22" fill="#6d5a44"></rect>
+              { v.rgnEpochLand ? (<>
+                <path d="M0 98 Q60 84 120 90 T220 92 L220 98 Z" fill="#6f9a55"></path>
+                <g stroke="#4f7d53" strokeWidth="2" strokeLinecap="round"><path d="M40 90 v-8 M45 90 v-11 M50 90 v-8 M168 92 v-8 M173 92 v-11 M178 92 v-8"></path></g>
+              </>) : null }
+              { v.rgnEpochSea ? (<>
+                <rect x="0" y="52" width="220" height="46" fill={v.rgnEpochOcean} opacity="0.92"></rect>
+                <path d="M0 54 Q30 49 60 54 T120 54 T180 54 T240 54" fill="none" stroke="#eaf7fd" strokeWidth="1.5" opacity="0.7"></path>
+                <circle cx="150" cy="76" r="3" fill="#eaf7fd" opacity="0.65"></circle>
+              </>) : null }
+              { v.rgnEpochIce ? (<>
+                <rect x="0" y="40" width="220" height="58" fill="#eef7fb"></rect>
+                <path d="M0 44 Q40 38 90 43 T220 42 L220 40 L0 40 Z" fill="#ffffff"></path>
+                <g stroke="#c4d7e0" strokeWidth="1.2" opacity="0.8"><path d="M60 40 v56 M120 40 v56 M175 40 v56"></path></g>
+              </>) : null }
+              <line x1="110" y1="0" x2="110" y2="120" stroke="#0f2c3c" strokeWidth="1" strokeDasharray="3 3" opacity="0.55"></line>
+            </svg>
+          </div>
+
+          <div style={css(`position:absolute;top:7px;left:8px;z-index:14;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#fff;background:rgba(15,44,60,0.72);padding:3px 8px;border-radius:20px;pointer-events:none`)}>{v.mapPeriodLabel}</div>
+          <div style={css(`position:absolute;top:7px;right:8px;z-index:14;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#fff;background:rgba(15,44,60,0.72);padding:3px 8px;border-radius:20px;pointer-events:none`)}>Aujourd'hui</div>
+          <div style={css(`position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.85);transform:translateX(-1px);pointer-events:none;z-index:13`)}></div>
+          <div style={css(`position:absolute;left:50%;top:2px;transform:translateX(-50%);z-index:15;font-size:13px;pointer-events:none`)}>📍</div>
+        </div>
+
+        <div style={css(`display:flex;gap:8px;margin-top:9px`)}>
+          <div style={css(`flex:1;background:#fff;border:1px solid #e0eaef;border-radius:11px;padding:10px 11px`)}>
+            <div style={css(`font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:#8aa5b3`)}>{v.mapPeriodLabel} · {v.mapPeriodAge}</div>
+            <div style={css(`font-size:12.5px;font-weight:600;color:#0f2c3c;margin-top:4px;line-height:1.3`)}>{v.rgnEpochEmoji} {v.rgnEpochPhrase}</div>
+          </div>
+          <div style={css(`flex:1;background:#fff;border:1px solid #e0eaef;border-radius:11px;padding:10px 11px`)}>
+            <div style={css(`font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:#8aa5b3`)}>Aujourd'hui</div>
+            <div style={css(`font-size:12.5px;font-weight:600;color:#0f2c3c;margin-top:4px;line-height:1.3`)}>{v.rgnTodayEmoji} {v.rgnTodayPhrase}</div>
+          </div>
+        </div>
+
         <div style={css(`margin-top:14px;background:#fff;border:1px solid #e0eaef;border-radius:12px;padding:13px 14px`)}>
           <div style={css(`display:flex;align-items:baseline;justify-content:space-between;gap:8px`)}>
             <div style={css(`font-family:'Spectral',serif;font-size:16px;font-weight:600`)}>{v.mapPeriodLabel}</div>

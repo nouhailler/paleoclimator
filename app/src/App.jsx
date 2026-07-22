@@ -544,6 +544,22 @@ class PaleoApp extends React.Component {
   pointInPoly(x, y, poly) { let inside = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1]; if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / ((yj - yi) || 1e-9) + xi)) inside = !inside; } return inside; }
   // État d'un lieu à une époque : sous la glace, terre émergée, ou sous l'eau.
   regionState(lng, lat, lands, ice) { if ((ice || []).some(p => this.pointInPoly(lng, lat, p))) return 'ice'; if ((lands || []).some(p => this.pointInPoly(lng, lat, p))) return 'land'; return 'sea'; }
+  // Distance (en degrés, corrigée en longitude par cos·lat) du point au bord le plus proche des polygones.
+  edgeDistDeg(lng, lat, polys) {
+    const cl = Math.max(0.25, Math.cos(lat * Math.PI / 180)); let best = Infinity;
+    const x = lng * cl, y = lat;
+    for (const poly of (polys || [])) for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const ax = poly[j][0] * cl, ay = poly[j][1], bx = poly[i][0] * cl, by = poly[i][1];
+      const dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy || 1e-9;
+      let t = ((x - ax) * dx + (y - ay) * dy) / L2; t = Math.max(0, Math.min(1, t));
+      const d = Math.hypot(x - (ax + t * dx), y - (ay + t * dy)); if (d < best) best = d;
+    }
+    return best === Infinity ? 0 : best;
+  }
+  // Épaisseur de glace estimée (km) : fine au bord, épaisse au cœur de la calotte.
+  iceThickness(lng, lat, ice, maxThk) { const f = Math.max(0, Math.min(1, this.edgeDistDeg(lng, lat, ice) / 12)); return 0.4 + f * (maxThk - 0.4); }
+  fmtDepth(m) { return m >= 1000 ? (m / 1000).toFixed(1).replace('.', ',') + ' km' : (Math.round(m / 10) * 10) + ' m'; }
+  fmtThk(km) { return km >= 1 ? km.toFixed(1).replace('.', ',') + ' km' : Math.round(km * 1000) + ' m'; }
   presentLands = [
     [[-168,66],[-158,71],[-130,70],[-95,72],[-82,73],[-64,60],[-70,47],[-81,43],[-81,25],[-97,26],[-107,24],[-117,32],[-124,40],[-124,48],[-138,58],[-152,59],[-168,66]],
     [[-45,60],[-22,70],[-20,76],[-32,83],[-52,82],[-55,76],[-50,68],[-45,60]],
@@ -1582,11 +1598,14 @@ class PaleoApp extends React.Component {
     const { mapPeriod, reveal, pinX, pinY, pinLabel } = this.state;
     const periods = {
       pangea: { label: 'Pangée', age: '≈ 250 Ma', note: "À la limite Permien–Trias, les continents sont soudés en un supercontinent unique, la Pangée, ceinturé par l'océan Panthalassa. Climat de type serre, saisons continentales extrêmes, aucune calotte polaire pérenne.", pin: "se trouvait soudée aux autres terres au cœur de la Pangée — souvent loin de tout littoral.",
-        st: { land: "Terre émergée — au cœur aride de la Pangée", sea: "Sous l'océan mondial Panthalassa", ice: "Sous une calotte polaire" } },
+        st: { land: "Terre émergée — au cœur aride de la Pangée", sea: "Sous l'océan mondial Panthalassa", ice: "Sous une calotte polaire" },
+        depth: { shelf: 80, deep: 4200 }, iceMax: 2.6 },
       cretaceous: { label: 'Crétacé', age: '≈ 90 Ma', note: "L'Atlantique s'ouvre et la Téthys sépare les masses continentales. Le niveau marin culmine (~+250 m) : de vastes mers épicontinentales inondent les continents. Pôles sans glace, climat chaud.", pin: "bordait probablement des mers chaudes et peu profondes, sous un climat sans glace polaire.",
-        st: { land: "Terre émergée, climat chaud sans glace", sea: "Sous une mer épicontinentale chaude", ice: "Sous la glace" } },
+        st: { land: "Terre émergée, climat chaud sans glace", sea: "Sous une mer épicontinentale chaude", ice: "Sous la glace" },
+        depth: { shelf: 180, deep: 3800 }, iceMax: 3.0 },
       lgm: { label: 'Dernier Maximum Glaciaire', age: '≈ 21 ka', note: "Géographie quasi moderne, mais d'immenses calottes (Laurentide, Fennoscandienne) recouvrent l'Amérique du Nord et l'Europe du Nord. Le niveau marin ~120 m plus bas exonde la Manche et la Béringie.", pin: "connaissait un climat glaciaire ; les plateaux continentaux proches étaient souvent émergés.",
-        st: { land: "Toundra / steppe périglaciaire", sea: "En mer (niveau ~120 m plus bas)", ice: "Sous la calotte — ~1 à 3 km de glace" } }
+        st: { land: "Toundra / steppe périglaciaire", sea: "En mer (niveau ~120 m plus bas)", ice: "Sous la calotte" },
+        depth: { shelf: 50, deep: 3900 }, iceMax: 3.4 }
     };
     const per = periods[mapPeriod];
 
@@ -1612,6 +1631,17 @@ class PaleoApp extends React.Component {
     const rgnEpochSt = this.regionState(pinLng, pinLat, mapCfg.lands, mapCfg.ice);
     const stEmoji = { ice: '❄️', sea: '🌊', land: '⛰️' };
     const stTodayPhrase = { ice: "Sous la glace (calotte actuelle)", land: "Terre émergée", sea: "En mer" };
+    // Chiffres : profondeur d'eau (mer épicontinentale sur continent noyé vs océan profond) et épaisseur de glace.
+    const onContinent = gpToday.lands.some(p => this.pointInPoly(pinLng, pinLat, p));
+    const seaShelfPhrase = { pangea: "Sous une mer côtière peu profonde", cretaceous: "Sous une mer épicontinentale chaude", lgm: "Sous une mer côtière" };
+    const seaDeepPhrase = { pangea: "Au large, dans l'océan Panthalassa", cretaceous: "Au large, en océan ouvert", lgm: "Au large, en océan ouvert" };
+    const rgnEpochPhrase = rgnEpochSt === 'sea' ? (onContinent ? seaShelfPhrase[mapPeriod] : seaDeepPhrase[mapPeriod]) : per.st[rgnEpochSt];
+    const rgnEpochValue = rgnEpochSt === 'sea'
+      ? '≈ ' + this.fmtDepth(onContinent ? per.depth.shelf : per.depth.deep) + " d'eau"
+      : rgnEpochSt === 'ice' ? '≈ ' + this.fmtThk(this.iceThickness(pinLng, pinLat, mapCfg.ice, per.iceMax)) + ' de glace' : '';
+    const rgnTodayValue = rgnTodaySt === 'sea'
+      ? '≈ ' + this.fmtDepth(3800) + " d'eau (océan)"
+      : rgnTodaySt === 'ice' ? '≈ ' + this.fmtThk(this.iceThickness(pinLng, pinLat, gpToday.ice, pinLat < -55 ? 3.6 : 2.9)) + ' de glace' : '';
 
     // proxies gallery
     const { proxy, grow, playing } = this.state;
@@ -2119,7 +2149,8 @@ class PaleoApp extends React.Component {
       rgnEpochIce: rgnEpochSt === 'ice', rgnEpochSea: rgnEpochSt === 'sea', rgnEpochLand: rgnEpochSt === 'land',
       rgnTodayIce: rgnTodaySt === 'ice', rgnTodaySea: rgnTodaySt === 'sea', rgnTodayLand: rgnTodaySt === 'land',
       rgnEpochEmoji: stEmoji[rgnEpochSt], rgnTodayEmoji: stEmoji[rgnTodaySt],
-      rgnEpochPhrase: per.st[rgnEpochSt], rgnTodayPhrase: stTodayPhrase[rgnTodaySt],
+      rgnEpochPhrase, rgnTodayPhrase: stTodayPhrase[rgnTodaySt],
+      rgnEpochValue, rgnTodayValue,
       rgnEpochOcean: mapCfg.ocean, rgnEpochLandCol: mapCfg.land,
       rgnTodayOcean: gpToday.ocean, rgnTodayLandCol: gpToday.land,
       rgnSame: rgnEpochSt === rgnTodaySt,

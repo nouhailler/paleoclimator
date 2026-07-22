@@ -465,8 +465,10 @@ export function renderApp(v, self) {
               </>) : null }
               <line x1="110" y1="0" x2="110" y2="120" stroke="#0f2c3c" strokeWidth="1" strokeDasharray="3 3" opacity="0.55"></line>
             </svg>
+            { v.rgnEpochValue ? (<div style={css(`position:absolute;left:8px;bottom:7px;z-index:14;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:500;color:#0f2c3c;background:rgba(255,255,255,0.82);padding:2px 7px;border-radius:20px;pointer-events:none`)}>{v.rgnEpochValue}</div>) : null }
           </div>
 
+          { v.rgnTodayValue ? (<div style={css(`position:absolute;right:8px;bottom:7px;z-index:14;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:500;color:#0f2c3c;background:rgba(255,255,255,0.82);padding:2px 7px;border-radius:20px;pointer-events:none`)}>{v.rgnTodayValue}</div>) : null }
           <div style={css(`position:absolute;top:7px;left:8px;z-index:14;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#fff;background:rgba(15,44,60,0.72);padding:3px 8px;border-radius:20px;pointer-events:none`)}>{v.mapPeriodLabel}</div>
           <div style={css(`position:absolute;top:7px;right:8px;z-index:14;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#fff;background:rgba(15,44,60,0.72);padding:3px 8px;border-radius:20px;pointer-events:none`)}>Aujourd'hui</div>
           <div style={css(`position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.85);transform:translateX(-1px);pointer-events:none;z-index:13`)}></div>
@@ -477,10 +479,12 @@ export function renderApp(v, self) {
           <div style={css(`flex:1;background:#fff;border:1px solid #e0eaef;border-radius:11px;padding:10px 11px`)}>
             <div style={css(`font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:#8aa5b3`)}>{v.mapPeriodLabel} · {v.mapPeriodAge}</div>
             <div style={css(`font-size:12.5px;font-weight:600;color:#0f2c3c;margin-top:4px;line-height:1.3`)}>{v.rgnEpochEmoji} {v.rgnEpochPhrase}</div>
+            { v.rgnEpochValue ? (<div style={css(`font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1d6f96;margin-top:3px`)}>{v.rgnEpochValue}</div>) : null }
           </div>
           <div style={css(`flex:1;background:#fff;border:1px solid #e0eaef;border-radius:11px;padding:10px 11px`)}>
             <div style={css(`font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:#8aa5b3`)}>Aujourd'hui</div>
             <div style={css(`font-size:12.5px;font-weight:600;color:#0f2c3c;margin-top:4px;line-height:1.3`)}>{v.rgnTodayEmoji} {v.rgnTodayPhrase}</div>
+            { v.rgnTodayValue ? (<div style={css(`font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1d6f96;margin-top:3px`)}>{v.rgnTodayValue}</div>) : null }
           </div>
         </div>
 

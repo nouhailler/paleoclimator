@@ -678,6 +678,16 @@ class PaleoApp extends React.Component {
     if (lat < 12) return 'SAM';
     return 'NAM';
   }
+  // Continent (code plaque) le plus proche d'un point — pour appliquer la bonne reconstruction.
+  nearestCont(lng, lat) {
+    let best = 'EUR', bd = Infinity;
+    for (const g of this.gazetteer) {
+      let dl = Math.abs(g.lng - lng); if (dl > 180) dl = 360 - dl;
+      const d = (g.lat - lat) * (g.lat - lat) + (dl * Math.cos(lat * Math.PI / 180)) ** 2;
+      if (d < bd) { bd = d; best = g.c; }
+    }
+    return best;
+  }
   paleoPos(sel, idx) {
     if (idx >= this.globePeriods.length - 1) return { lat: sel.lat, lng: sel.lng };
     const off = (this.contOffsets[sel.c] || this.contOffsets.EUR)[idx];
@@ -1655,9 +1665,13 @@ class PaleoApp extends React.Component {
     const rgnTodayValue = rgnTodaySt === 'sea'
       ? '≈ ' + this.fmtDepth(3800) + " d'eau (océan)"
       : rgnTodaySt === 'ice' ? '≈ ' + this.fmtThk(todayIceThk) + ' de glace' : '';
-    // Températures locales estimées (époque vs aujourd'hui).
+    // Paléolatitude du repère à l'époque (dérive des plaques).
+    const glIdx = { pangea: 0, cretaceous: 2, lgm: 4 }[mapPeriod];
+    const rgnPaleo = this.paleoPos({ lat: pinLat, lng: pinLng, c: this.nearestCont(pinLng, pinLat) }, glIdx);
+    const rgnPaleoLat = rgnPaleo.lat;
+    // Températures locales estimées — l'époque utilise la paléolatitude (position réelle d'alors).
     const epGlobalT = this.interp(this.cTemp, per.ageMa);
-    const rgnEpochTemp = this.fmtTemp(this.localTemp(pinLat, epGlobalT, rgnEpochSt, epochIceThk));
+    const rgnEpochTemp = this.fmtTemp(this.localTemp(rgnPaleoLat, epGlobalT, rgnEpochSt, epochIceThk));
     const rgnTodayTemp = this.fmtTemp(this.localTemp(pinLat, 15, rgnTodaySt, todayIceThk));
 
     // proxies gallery
@@ -2168,6 +2182,8 @@ class PaleoApp extends React.Component {
       rgnEpochEmoji: stEmoji[rgnEpochSt], rgnTodayEmoji: stEmoji[rgnTodaySt],
       rgnEpochPhrase, rgnTodayPhrase: stTodayPhrase[rgnTodaySt],
       rgnEpochValue, rgnTodayValue, rgnEpochTemp, rgnTodayTemp,
+      rgnPaleoLatTxt: this.fmtLat(rgnPaleoLat) + ' · ' + this.zoneName(rgnPaleoLat),
+      rgnTodayLatTxt: this.fmtLat(pinLat) + ' · ' + this.zoneName(pinLat),
       rgnEpochOcean: mapCfg.ocean, rgnEpochLandCol: mapCfg.land,
       rgnTodayOcean: gpToday.ocean, rgnTodayLandCol: gpToday.land,
       rgnSame: rgnEpochSt === rgnTodaySt,

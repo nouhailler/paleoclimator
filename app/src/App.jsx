@@ -9,7 +9,7 @@ import { renderApp } from "./render.jsx"
 // ============================================================================
 
 class PaleoApp extends React.Component {
-  state = { screen: 'home', menuOpen: false, eraId: 0, age: 0, tmRange: 'full', tmScrub: 1000, evt: null, mapPeriod: 'pangea', reveal: 50, pinX: 52, pinY: 46, pinLabel: 'Votre région', dragging: false, proxy: null, grow: 100, playing: false, extreme: null, dsOn: { epica: true, sea: true, lr04: true }, shiftDs: 'sea', shiftKa: 0, dCalcite: '-1.5', dWater: '0.0', eqId: 'shack', ecc: 1.67, obl: 23.44, prec: 283, season: 90, glossQ: '', glossCat: 'Tous', site: null, siteCat: 'Tous', addMode: false, userSites: [], helpOpen: false, globePeriod: 4, globeRotate: true, geoQ: '', geoSel: null, histYear: 2008, storyId: 0, extinctId: null, atlasId: null, sciId: null, catMenu: null, tmInfo: null };
+  state = { screen: 'home', menuOpen: false, eraId: 0, age: 0, tmRange: 'full', tmScrub: 1000, evt: null, mapPeriod: 'pangea', reveal: 50, pinX: 52, pinY: 46, pinLabel: 'Votre région', dragging: false, proxy: null, grow: 100, playing: false, extreme: null, dsOn: { epica: true, sea: true, lr04: true }, shiftDs: 'sea', shiftKa: 0, dCalcite: '-1.5', dWater: '0.0', eqId: 'shack', ecc: 1.67, obl: 23.44, prec: 283, season: 90, glossQ: '', glossCat: 'Tous', site: null, siteCat: 'Tous', addMode: false, userSites: [], helpOpen: false, globePeriod: 4, globeRotate: true, geoQ: '', geoSel: null, histYear: 2008, storyId: 0, extinctId: null, atlasId: null, sciId: null, catMenu: null, tmInfo: null, pinSugOpen: false };
   globeRef = React.createRef();
   mapRef = React.createRef();
   cmpRef = React.createRef();
@@ -2190,7 +2190,26 @@ class PaleoApp extends React.Component {
       handleStyle: { position: 'absolute', top: 0, bottom: 0, left: `${reveal}%`, width: 2, background: '#fff', boxShadow: '0 0 5px rgba(0,0,0,.45)', transform: 'translateX(-1px)', pointerEvents: 'none', zIndex: 15 },
       handleGripStyle: { position: 'absolute', top: '50%', left: `${reveal}%`, transform: 'translate(-50%,-50%)', width: 30, height: 30, borderRadius: '50%', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f2c3c', fontSize: 13, pointerEvents: 'none', zIndex: 16 },
       pinStyle: { position: 'absolute', left: `${pinX}%`, top: `${pinY}%`, transform: 'translate(-50%,-100%)', zIndex: 20, cursor: 'grab', touchAction: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' },
-      pinLabel, onPinLabel: (e) => this.setState({ pinLabel: e.target.value }),
+      pinLabel,
+      onPinLabel: (e) => { const val = e.target.value; this.setState({ pinLabel: val, pinSugOpen: this.gNorm(val).length >= 3 }); },
+      closePinSug: () => this.setState({ pinSugOpen: false }),
+      onPinBlur: () => { setTimeout(() => this.setState({ pinSugOpen: false }), 160); },
+      onPinFocus: () => { if (this.gNorm(this.state.pinLabel).length >= 3) this.setState({ pinSugOpen: true }); },
+      // Autocomplétion de villes (dès 3 caractères) : sélectionner déplace le repère.
+      pinSugShow: this.state.pinSugOpen && this.gNorm(pinLabel).length >= 3,
+      pinSuggestions: (() => {
+        const q = this.gNorm(pinLabel);
+        if (q.length < 3) return [];
+        return this.gazetteer.filter(g => this.gNorm(g.n).includes(q) || this.gNorm(g.alt).includes(q)).slice(0, 6).map(g => ({
+          name: g.n, sub: this.fmtCoord(g.lat, g.lng),
+          pick: () => this.setState({
+            pinLabel: g.n, pinSugOpen: false,
+            pinX: Math.max(2, Math.min(98, (g.lng + 180) / 360 * 100)),
+            pinY: Math.max(8, Math.min(96, (90 - g.lat) / 180 * 100)),
+          }),
+        }));
+      })(),
+      pinSugEmpty: (() => { const q = this.gNorm(pinLabel); return q.length >= 3 && !this.gazetteer.some(g => this.gNorm(g.n).includes(q) || this.gNorm(g.alt).includes(q)); })(),
       onPinDown: (e) => this.onPinDown(e), onPinMove: (e) => this.onPinMove(e), onPinUp: () => this.onPinUp(),
       mapPeriodLabel: per.label, mapPeriodAge: per.age, mapPeriodNote: per.note, mapPinNote: per.pin,
       eras, era, age,

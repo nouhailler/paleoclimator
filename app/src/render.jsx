@@ -502,7 +502,20 @@ export function renderApp(v, self) {
 
         <div style={css(`margin-top:12px;background:#eef4f7;border:1px solid #dbe7ec;border-radius:12px;padding:13px 14px`)}>
           <div style={css(`font-size:9px;letter-spacing:.6px;text-transform:uppercase;color:#8aa5b3`)}>Votre repère</div>
-          <input value={v.pinLabel} onChange={v.onPinLabel} onInput={v.onPinLabel} placeholder="Nom de votre région" style={css(`width:100%;margin-top:6px;padding:9px 11px;border:1px solid #cfe0e8;border-radius:9px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#0f2c3c;background:#fff;outline:none`)} />
+          <div style={css(`position:relative`)}>
+            <input value={v.pinLabel} onChange={v.onPinLabel} onInput={v.onPinLabel} onFocus={v.onPinFocus} onBlur={v.onPinBlur} placeholder="Tapez une ville (3 lettres min.)…" autoComplete="off" style={css(`width:100%;margin-top:6px;padding:9px 11px;border:1px solid #cfe0e8;border-radius:9px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#0f2c3c;background:#fff;outline:none`)} />
+            { v.pinSugShow ? (<>
+            <div style={css(`position:absolute;left:0;right:0;top:calc(100% + 3px);z-index:22;background:#fff;border:1px solid #cfe0e8;border-radius:9px;box-shadow:0 8px 24px rgba(15,44,60,0.18);overflow:hidden`)}>
+              { (v.pinSuggestions || []).map((s, __k1) => (<React.Fragment key={__k1}>
+                <div onPointerDown={s.pick} style={css(`display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;cursor:pointer;border-bottom:1px solid #eef4f7`)}>
+                  <div style={css(`font-size:13px;color:#0f2c3c`)}>📍 {s.name}</div>
+                  <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#8aa5b3;white-space:nowrap`)}>{s.sub}</div>
+                </div>
+              </React.Fragment>)) }
+              { v.pinSugEmpty ? (<div style={css(`padding:9px 11px;font-size:12px;color:#8aa5b3`)}>Aucune ville trouvée</div>) : null }
+            </div>
+            </>) : null }
+          </div>
           <div style={css(`font-size:12px;line-height:1.55;color:#33505f;margin-top:9px`)}>Il y a {v.mapPeriodAge}, « {v.pinLabel} » {v.mapPinNote}</div>
         </div>
 

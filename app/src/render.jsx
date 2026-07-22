@@ -44,7 +44,12 @@ export function renderApp(v, self) {
         <div style={css(`font-size:12.5px;line-height:1.5;color:#4d6c7d;margin-bottom:16px`)}>Explorez les grands régimes climatiques de la Terre, des serres sans glace aux Terres « boule de neige ». Touchez une ère. Les outils d'analyse sont dans le menu ☰.</div>
 
         { (v.eras || []).map((era, __k1) => (<React.Fragment key={__k1}>
-          <div onClick={era.open} style={css(`display:flex;gap:0;margin-bottom:9px;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(15,44,60,0.06),0 8px 20px rgba(15,44,60,0.05);cursor:pointer;border:1px solid #e0eaef`)}>
+          <div onClick={era.open} style={css(`display:flex;flex-direction:column;margin-bottom:9px;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(15,44,60,0.06),0 8px 20px rgba(15,44,60,0.05);cursor:pointer;border:1px solid #e0eaef`)}>
+            <div style={css(`position:relative;height:78px;overflow:hidden`)}>
+              <img src={era.img} alt={'Paléoenvironnement — ' + era.name} loading="lazy" style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
+              <div style={css(`position:absolute;left:0;right:0;bottom:0;height:22px;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,0.9))`)}></div>
+            </div>
+            <div style={css(`display:flex;gap:0`)}>
             <div style={css(`width:8px;flex-shrink:0;background:${era.color}`)}></div>
             <div style={css(`flex:1;padding:13px 14px;min-width:0`)}>
               <div style={css(`display:flex;align-items:baseline;justify-content:space-between;gap:8px`)}>
@@ -62,6 +67,7 @@ export function renderApp(v, self) {
                   <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:#0f2c3c;margin-top:2px`)}>{era.regime}</div>
                 </div>
               </div>
+            </div>
             </div>
           </div>
         </React.Fragment>)) }
@@ -100,8 +106,9 @@ export function renderApp(v, self) {
           </div>
 
           
-          <div style={css(`height:130px;border-radius:12px;margin-bottom:18px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,${v.era.color}22,${v.era.color}22 10px,${v.era.color}12 10px,${v.era.color}12 20px);border:1px solid #dbe7ec;display:flex;align-items:flex-end;padding:10px`)}>
-            <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#5c7d8e;background:rgba(255,255,255,0.75);padding:4px 7px;border-radius:5px`)}>reconstitution paléoenvironnement — {v.era.name}</div>
+          <div style={css(`height:150px;border-radius:12px;margin-bottom:18px;overflow:hidden;position:relative;border:1px solid #dbe7ec`)}>
+            <img src={v.era.img} alt={'Reconstitution paléoenvironnement — ' + v.era.name} style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
+            <div style={css(`position:absolute;left:8px;bottom:8px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#33505f;background:rgba(255,255,255,0.82);padding:4px 8px;border-radius:5px`)}>reconstitution paléoenvironnement — {v.era.name}</div>
           </div>
 
           <div style={css(`font-family:'Spectral',serif;font-size:15px;font-weight:600;margin-bottom:7px`)}>Climat & contexte</div>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="160" viewBox="0 0 320 160">
+  <defs>
+    <linearGradient id="a-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a3b2f"/><stop offset="0.55" stop-color="#c56a3d"/><stop offset="1" stop-color="#e6a256"/>
+    </linearGradient>
+    <linearGradient id="a-sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a6a5a"/><stop offset="1" stop-color="#5f4a43"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="160" fill="url(#a-sky)"/>
+  <!-- jeune Soleil faible -->
+  <circle cx="256" cy="44" r="20" fill="#f6d9a0" opacity="0.55"/>
+  <circle cx="256" cy="44" r="12" fill="#f9e6bd" opacity="0.7"/>
+  <!-- volcans en éruption -->
+  <polygon points="-10,104 46,52 104,104" fill="#5a3b32"/>
+  <polygon points="30,66 46,52 62,66" fill="#e8703a"/>
+  <path d="M46,52 q-4,-14 2,-24 q6,10 2,18 q8,-2 6,8 q-6,-2 -10,0 Z" fill="#6b5347" opacity="0.85"/>
+  <polygon points="210,104 262,58 316,104" fill="#4f342c"/>
+  <polygon points="248,72 262,58 276,72" fill="#f0864a"/>
+  <!-- mer primitive -->
+  <rect y="100" width="320" height="60" fill="url(#a-sea)"/>
+  <path d="M0,108 Q80,100 160,108 T320,106 L320,160 L0,160 Z" fill="#6d554b" opacity="0.7"/>
+  <!-- coulées de lave -->
+  <path d="M40,104 q6,10 2,20 q-4,-2 -4,-8" fill="#e8703a" opacity="0.8"/>
+  <path d="M262,104 q4,10 0,18 q-4,-2 -2,-8" fill="#f0864a" opacity="0.8"/>
+  <!-- stromatolithes -->
+  <g fill="#3f6a63">
+    <path d="M120,150 q-2,-16 8,-18 q10,2 8,18 Z"/>
+    <path d="M144,150 q-2,-12 6,-14 q8,2 6,14 Z"/>
+    <path d="M166,150 q-2,-15 8,-16 q9,2 7,16 Z"/>
+  </g>
+  <g stroke="#5a8a80" stroke-width="1" fill="none" opacity="0.7">
+    <path d="M122,148 q6,-2 12,0 M122,144 q6,-2 12,0 M146,148 q5,-2 10,0"/>
+  </g>
+</svg>

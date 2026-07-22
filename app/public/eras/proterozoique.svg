@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="160" viewBox="0 0 320 160">
+  <defs>
+    <linearGradient id="pr-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b9b6d6"/><stop offset="1" stop-color="#dde4ee"/>
+    </linearGradient>
+    <linearGradient id="pr-ice" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2f7fb"/><stop offset="1" stop-color="#cdd9e6"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="160" fill="url(#pr-sky)"/>
+  <!-- soleil pâle et froid -->
+  <circle cx="250" cy="40" r="18" fill="#eef1f8" opacity="0.8"/>
+  <!-- Terre boule de neige : banquise fracturée à perte de vue -->
+  <rect y="86" width="320" height="74" fill="url(#pr-ice)"/>
+  <path d="M0,92 Q80,84 160,92 T320,90 L320,160 L0,160 Z" fill="#e2ebf3"/>
+  <!-- crêtes de glace -->
+  <polygon points="20,120 44,98 70,120" fill="#f4f9fc"/>
+  <polygon points="60,124 96,96 132,124" fill="#eaf2f8"/>
+  <polygon points="180,122 214,100 250,122" fill="#f4f9fc"/>
+  <polygon points="240,126 276,102 316,126" fill="#eaf2f8"/>
+  <!-- fractures de la banquise -->
+  <g stroke="#a8bccf" stroke-width="1.5" fill="none" opacity="0.8">
+    <path d="M0,140 L60,132 L110,146 L180,136 L240,150 L320,140"/>
+    <path d="M30,152 L90,144 M150,150 L210,142 M250,138 L300,150"/>
+    <path d="M120,132 L140,120 M200,128 L212,116"/>
+  </g>
+  <!-- givre dans le ciel -->
+  <g fill="#ffffff" opacity="0.85">
+    <circle cx="40" cy="34" r="1.8"/><circle cx="100" cy="52" r="1.4"/><circle cx="160" cy="30" r="1.8"/>
+    <circle cx="300" cy="60" r="1.6"/><circle cx="200" cy="58" r="1.4"/><circle cx="24" cy="66" r="1.4"/>
+  </g>
+</svg>

@@ -30,7 +30,7 @@ class PaleoApp extends React.Component {
   }
 
   eras = [
-    { name: 'Quaternaire', span: '2,58 Ma – présent', color: '#6fb2d1', wash: '#e4f0f5',
+    { name: 'Quaternaire', span: '2,58 Ma – présent', color: '#6fb2d1', wash: '#e4f0f5', img: '/eras/quaternaire.svg',
       tag: 'Cycles glaciaires–interglaciaires rythmés par les paramètres orbitaux de Milankovitch.',
       co2: '180–300 ppm', temp: '≈ −5 à +1 °C', ice: 'Étendues', regime: 'Glaciaire',
       body: "Le Quaternaire est marqué par l'alternance régulière de calottes massives et de brefs interglaciaires chauds. Les carottes de glace antarctiques (EPICA Dome C) restituent en continu 800 000 ans de CO₂, de CH₄ et de température, révélant un couplage étroit entre gaz à effet de serre et climat, et une variation naturelle du CO₂ confinée entre ~180 et ~300 ppm. C'est l'archive de référence pour évaluer le forçage anthropique actuel.",
@@ -52,7 +52,7 @@ class PaleoApp extends React.Component {
         'δ¹⁸O des foraminifères benthiques (marin) → volume global de glace.',
         'Pollens et δ¹⁸O des spéléothèmes → hydrologie continentale.'
       ] },
-    { name: 'Cénozoïque ancien', span: '66 – 2,58 Ma', color: '#8fbfc9', wash: '#e6f0f2',
+    { name: 'Cénozoïque ancien', span: '66 – 2,58 Ma', color: '#8fbfc9', wash: '#e6f0f2', img: '/eras/cenozoique.svg',
       tag: "Long refroidissement depuis l'optimum de l'Éocène jusqu'à l'englacement des pôles.",
       co2: '~280–1400 ppm', temp: '≈ +4 à +12 °C', ice: 'Naissantes', regime: 'Transition',
       body: "Après le pic de chaleur du maximum thermique Paléocène–Éocène (PETM), la Terre entame un refroidissement séculaire tracé par la courbe δ¹⁸O benthique de Zachos, lié à la baisse du CO₂ (altération himalayenne) et à la réorganisation océanique. La calotte antarctique s'installe vers 34 Ma, celle du Groenland bien plus tard (~2,7 Ma), préparant le monde bipolaire du Quaternaire.",
@@ -73,7 +73,7 @@ class PaleoApp extends React.Component {
         'Alcénones (indice UK′37) et TEX86 → température de surface des mers.',
         'Densité stomatique des feuilles fossiles → CO₂ atmosphérique.'
       ] },
-    { name: 'Mésozoïque', span: '252 – 66 Ma', color: '#7fbfa2', wash: '#e7f2ec',
+    { name: 'Mésozoïque', span: '252 – 66 Ma', color: '#7fbfa2', wash: '#e7f2ec', img: '/eras/mesozoique.svg',
       tag: 'Monde « serre » chaud, largement dépourvu de glace polaire pérenne.',
       co2: '~1000–2000 ppm', temp: '≈ +10 à +14 °C', ice: 'Quasi nulles', regime: 'Serre',
       body: "L'ère des dinosaures se déroule sous un climat chaud entretenu par un volcanisme actif et la dislocation de la Pangée. Les pôles restent tempérés, sans grande calotte, et le niveau marin est haut. Des événements anoxiques océaniques (OAE), lisibles dans les excursions du δ¹³C, ponctuent le Crétacé et enfouissent d'importantes quantités de carbone.",
@@ -94,7 +94,7 @@ class PaleoApp extends React.Component {
         'TEX86 (archées) → température de surface des océans chauds.',
         'Stomates et modèles géochimiques (GEOCARB) → pCO₂ élevé.'
       ] },
-    { name: 'Paléozoïque', span: '541 – 252 Ma', color: '#d0a95f', wash: '#f3ecdd',
+    { name: 'Paléozoïque', span: '541 – 252 Ma', color: '#d0a95f', wash: '#f3ecdd', img: '/eras/paleozoique.svg',
       tag: 'Grandes bascules : glaciations continentales et effondrement du CO₂.',
       co2: '~300–4000 ppm', temp: '≈ −2 à +8 °C', ice: 'Variables', regime: 'Contrasté',
       body: "Le Paléozoïque voit l'essor de la vie complexe, la conquête des continents par les plantes et de fortes bascules climatiques. La chute du CO₂ au Carbonifère, liée à l'enfouissement massif de carbone végétal, déclenche la Glaciation du Paléozoïque tardif (LPIA). L'ère s'achève par la plus grande extinction de tous les temps, à la limite Permien–Trias.",
@@ -116,7 +116,7 @@ class PaleoApp extends React.Component {
         'δ¹³C des carbonates et modèle GEOCARB → variations du CO₂.',
         'Paléosols et indice stomatique → CO₂ atmosphérique.'
       ] },
-    { name: 'Protérozoïque', span: '2500 – 541 Ma', color: '#a595c9', wash: '#eeeaf4',
+    { name: 'Protérozoïque', span: '2500 – 541 Ma', color: '#a595c9', wash: '#eeeaf4', img: '/eras/proterozoique.svg',
       tag: 'Grande Oxydation et épisodes de « Terre boule de neige ».',
       co2: 'Très variable', temp: 'Extrêmes', ice: 'Globales (Cryogénien)', regime: 'Extrême',
       body: "La photosynthèse oxygénique transforme l'atmosphère lors de la Grande Oxydation (~2,4 Ga). Au Cryogénien, des glaciations quasi totales enveloppent la planète (« Snowball Earth »), attestées par des dépôts glaciaires à basse latitude et surmontées de capuchons carbonatés ; elles sont suivies de réchauffements brutaux par accumulation de CO₂ volcanique. Ces crises précèdent l'essor de la vie multicellulaire.",
@@ -137,7 +137,7 @@ class PaleoApp extends React.Component {
         'Capuchons carbonatés et excursions extrêmes du δ¹³C → déglaciations brutales.',
         'δ³⁴S et disparition du MIF-S → oxygénation de l\u2019atmosphère.'
       ] },
-    { name: 'Archéen', span: '4000 – 2500 Ma', color: '#c78f8f', wash: '#f3e9e9',
+    { name: 'Archéen', span: '4000 – 2500 Ma', color: '#c78f8f', wash: '#f3e9e9', img: '/eras/archeen.svg',
       tag: 'Terre jeune sous un Soleil faible : le paradoxe du jeune Soleil.',
       co2: 'Élevé (CO₂/CH₄)', temp: 'Tempérée malgré tout', ice: 'Absentes', regime: 'Primitif',
       body: "Le Soleil archéen était ~20–25 % moins lumineux qu'aujourd'hui, et pourtant l'eau liquide était présente : c'est le paradoxe du jeune Soleil faible. Une atmosphère riche en CO₂ et méthane, dépourvue d'oxygène libre (signature MIF du soufre), aurait maintenu un fort effet de serre. Les premiers procaryotes et stromatolithes apparaissent et façonnent peu à peu la géochimie de surface.",

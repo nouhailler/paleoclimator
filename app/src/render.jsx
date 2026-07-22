@@ -382,12 +382,20 @@ export function renderApp(v, self) {
           <div onClick={v.setLgm} style={v.periodLgmStyle}>Dern. glaciation<br />21 ka</div>
         </div>
 
-        <div ref={v.cmpRef} style={css(`position:relative;width:100%;height:224px;border-radius:14px;overflow:hidden;border:1px solid #cfe0e8;background:#dbe7ec;touch-action:none`)}>
-          <ImageSlot ph="Déposez une carte du monde ACTUELLE" fill />
+        <div ref={v.cmpRef} style={css(`position:relative;width:100%;aspect-ratio:2 / 1;border-radius:14px;overflow:hidden;border:1px solid #cfe0e8;background:#dbe7ec;touch-action:none`)}>
+          <svg viewBox={`0 0 ${v.mapW} ${v.mapH}`} preserveAspectRatio="xMidYMid meet" style={css(`position:absolute;inset:0;width:100%;height:100%;display:block`)}>
+            <rect width={v.mapW} height={v.mapH} fill={v.mapTodayOcean}></rect>
+            <path d={v.mapGrat} fill="none" stroke="#ffffff" strokeOpacity="0.14" strokeWidth="0.6"></path>
+            <path d={v.mapTodayLand} fill={v.mapTodayLandCol} stroke="#0f2c3c" strokeOpacity="0.18" strokeWidth="0.5"></path>
+            <path d={v.mapTodayIce} fill="#eef7fb" fillOpacity="0.9"></path>
+          </svg>
           <div style={v.overlayClipStyle}>
-            <div style={v.slotPangeaStyle}><ImageSlot ph="Carte de la Pangée (≈250 Ma)" fill /></div>
-            <div style={v.slotCretStyle}><ImageSlot ph="Carte du Crétacé (≈90 Ma)" fill /></div>
-            <div style={v.slotLgmStyle}><ImageSlot ph="Calottes au dernier max. glaciaire (≈21 ka)" fill /></div>
+            <svg viewBox={`0 0 ${v.mapW} ${v.mapH}`} preserveAspectRatio="xMidYMid meet" style={css(`position:absolute;inset:0;width:100%;height:100%;display:block`)}>
+              <rect width={v.mapW} height={v.mapH} fill={v.mapPeriodOcean}></rect>
+              <path d={v.mapGrat} fill="none" stroke="#ffffff" strokeOpacity="0.14" strokeWidth="0.6"></path>
+              <path d={v.mapPeriodLand} fill={v.mapPeriodLandCol} stroke="#0f2c3c" strokeOpacity="0.18" strokeWidth="0.5"></path>
+              <path d={v.mapPeriodIce} fill="#eef7fb" fillOpacity="0.9"></path>
+            </svg>
           </div>
 
           <div style={css(`position:absolute;top:8px;left:8px;z-index:14;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#fff;background:rgba(15,44,60,0.72);padding:3px 8px;border-radius:20px;pointer-events:none`)}>{v.mapPeriodLabel}</div>
@@ -421,7 +429,7 @@ export function renderApp(v, self) {
           <div style={css(`font-size:12px;line-height:1.55;color:#33505f;margin-top:9px`)}>Il y a {v.mapPeriodAge}, « {v.pinLabel} » {v.mapPinNote}</div>
         </div>
 
-        <div style={css(`margin-top:12px;padding:11px 13px;border-radius:10px;background:#12303f;color:#dce9ef;font-size:10px;line-height:1.55`)}>Déposez vos propres cartes dans les cadres (glisser-déposer) — par exemple les reconstructions PALEOMAP / C. R. Scotese. La correspondance exacte du repère dépend de la carte fournie ; le texte reste indicatif.</div>
+        <div style={css(`margin-top:12px;padding:11px 13px;border-radius:10px;background:#12303f;color:#dce9ef;font-size:10px;line-height:1.55`)}>Cartes dessinées en projection équirectangulaire à partir de contours de paléocontinents simplifiés (à visée pédagogique). Océans, terres émergées et calottes évoluent avec l'époque choisie. Modèles de référence : PALEOMAP (C. R. Scotese) et GPlates.</div>
       </div>
       </>) : null }
 

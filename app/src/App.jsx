@@ -536,6 +536,10 @@ class PaleoApp extends React.Component {
   storyBtn(enabled) { return { flex: 1, textAlign: 'center', padding: '10px 6px', borderRadius: 9, fontSize: 12, fontWeight: 600, cursor: enabled ? 'pointer' : 'default', border: '1px solid #d3e0e6', background: enabled ? '#fff' : '#f2f6f8', color: enabled ? '#1d6f96' : '#b7c6cd' }; }
   mapChip(active) { return { flex: 1, textAlign: 'center', padding: '8px 4px', borderRadius: 9, fontSize: 10.5, fontWeight: active ? 600 : 500, cursor: 'pointer', lineHeight: 1.25, border: '1px solid ' + (active ? '#1d6f96' : '#d3e0e6'), background: active ? '#1d6f96' : '#fff', color: active ? '#fff' : '#5b7688' }; }
   globeChip(active) { return { textAlign: 'center', padding: '7px 3px', borderRadius: 8, fontSize: 9.5, fontWeight: active ? 600 : 500, cursor: 'pointer', lineHeight: 1.3, border: '1px solid ' + (active ? '#1d6f96' : '#d3e0e6'), background: active ? '#1d6f96' : '#fff', color: active ? '#fff' : '#5b7688' }; }
+  // Projection équirectangulaire : liste de polygones [lng,lat] -> chaîne SVG `d` (boîte W×H).
+  equirect(polys, W, H) { return (polys || []).map(poly => poly.map((p, i) => `${i ? 'L' : 'M'}${(((p[0] + 180) / 360) * W).toFixed(1)} ${(((90 - p[1]) / 180) * H).toFixed(1)}`).join(' ') + ' Z').join(' '); }
+  // Graticule (méridiens tous les 30°, parallèles tous les 30°).
+  graticule(W, H) { let d = ''; for (let lng = -150; lng <= 150; lng += 30) { const x = (((lng + 180) / 360) * W).toFixed(1); d += `M${x} 0L${x} ${H}`; } for (let lat = -60; lat <= 60; lat += 30) { const y = (((90 - lat) / 180) * H).toFixed(1); d += `M0 ${y}L${W} ${y}`; } return d; }
   presentLands = [
     [[-168,66],[-158,71],[-130,70],[-95,72],[-82,73],[-64,60],[-70,47],[-81,43],[-81,25],[-97,26],[-107,24],[-117,32],[-124,40],[-124,48],[-138,58],[-152,59],[-168,66]],
     [[-45,60],[-22,70],[-20,76],[-32,83],[-52,82],[-55,76],[-50,68],[-45,60]],
@@ -1579,6 +1583,21 @@ class PaleoApp extends React.Component {
     };
     const per = periods[mapPeriod];
 
+    // Cartes dynamiques dessinées (projection équirectangulaire) — plus de placeholders.
+    const MW = 360, MH = 180;
+    const gpToday = this.globePeriods[4]; // Actuel
+    // Calottes du Dernier Maximum Glaciaire (Laurentide, Fennoscandie) + Antarctique + Groenland.
+    const lgmIce = [
+      [[-142,58],[-120,74],[-86,80],[-58,73],[-52,58],[-74,46],[-102,44],[-126,48],[-142,58]],
+      [[-6,54],[13,61],[35,69],[57,71],[47,58],[24,54],[3,51],[-6,54]],
+      this.antarctica, this.greenland
+    ];
+    const mapCfg = {
+      pangea: { lands: this.globePeriods[0].lands, ice: this.globePeriods[0].ice, ocean: this.globePeriods[0].ocean, land: this.globePeriods[0].land },
+      cretaceous: { lands: this.globePeriods[2].lands, ice: this.globePeriods[2].ice, ocean: this.globePeriods[2].ocean, land: this.globePeriods[2].land },
+      lgm: { lands: this.presentLands, ice: lgmIce, ocean: '#2b6a8a', land: '#7e8c56' }
+    }[mapPeriod];
+
     // proxies gallery
     const { proxy, grow, playing } = this.state;
     const pKeys = ['ice', 'tree', 'sediment'];
@@ -2074,9 +2093,12 @@ class PaleoApp extends React.Component {
       periodLgmStyle: this.mapChip(mapPeriod === 'lgm'),
       onReveal: (e) => this.setState({ reveal: +e.target.value }),
       overlayClipStyle: { position: 'absolute', inset: 0, clipPath: `inset(0 ${100 - reveal}% 0 0)` },
-      slotPangeaStyle: { position: 'absolute', inset: 0, display: mapPeriod === 'pangea' ? 'block' : 'none' },
-      slotCretStyle: { position: 'absolute', inset: 0, display: mapPeriod === 'cretaceous' ? 'block' : 'none' },
-      slotLgmStyle: { position: 'absolute', inset: 0, display: mapPeriod === 'lgm' ? 'block' : 'none' },
+      // cartes dessinées (équirectangulaire)
+      mapW: MW, mapH: MH, mapGrat: this.graticule(MW, MH),
+      mapTodayOcean: gpToday.ocean, mapTodayLandCol: gpToday.land,
+      mapTodayLand: this.equirect(gpToday.lands, MW, MH), mapTodayIce: this.equirect(gpToday.ice, MW, MH),
+      mapPeriodOcean: mapCfg.ocean, mapPeriodLandCol: mapCfg.land,
+      mapPeriodLand: this.equirect(mapCfg.lands, MW, MH), mapPeriodIce: this.equirect(mapCfg.ice, MW, MH),
       handleStyle: { position: 'absolute', top: 0, bottom: 0, left: `${reveal}%`, width: 2, background: '#fff', boxShadow: '0 0 5px rgba(0,0,0,.45)', transform: 'translateX(-1px)', pointerEvents: 'none', zIndex: 15 },
       handleGripStyle: { position: 'absolute', top: '50%', left: `${reveal}%`, transform: 'translate(-50%,-50%)', width: 30, height: 30, borderRadius: '50%', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f2c3c', fontSize: 13, pointerEvents: 'none', zIndex: 16 },
       pinStyle: { position: 'absolute', left: `${pinX}%`, top: `${pinY}%`, transform: 'translate(-50%,-100%)', zIndex: 20, cursor: 'grab', touchAction: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' },

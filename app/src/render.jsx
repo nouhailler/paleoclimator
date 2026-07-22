@@ -1347,9 +1347,10 @@ export function renderApp(v, self) {
         { v.fo ? (<>
         <div>
           <div onClick={v.backToFossils} style={css(`font-size:11px;color:#38617a;font-weight:500;margin-bottom:12px;cursor:pointer`)}>‹ Tous les fossiles</div>
-          <div style={css(`height:200px;border-radius:16px;overflow:hidden;background:${v.fo.wash};position:relative;border:1px solid #e0eaef;margin-bottom:14px`)}>
+          <div style={css(`height:200px;border-radius:16px;overflow:hidden;background:${v.fo.wash};position:relative;border:1px solid #e0eaef`)}>
             <img src={v.fo.img} alt={v.fo.name} style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
           </div>
+          { v.fo.credit ? (<div style={css(`font-size:9.5px;color:#8aa5b3;margin-top:5px;margin-bottom:12px;line-height:1.4`)}>📷 {v.fo.credit.artist} · {v.fo.credit.license} · Wikimedia Commons</div>) : <div style={css(`margin-bottom:14px`)}></div> }
           <div style={css(`font-family:'Spectral',serif;font-size:23px;font-weight:600;line-height:1.1;color:#0f2c3c`)}>{v.fo.name}</div>
           <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:${v.fo.color};margin-top:4px;margin-bottom:14px`)}>{v.fo.taxon}</div>
 

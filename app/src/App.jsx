@@ -705,6 +705,8 @@ class PaleoApp extends React.Component {
   fmtLat(lat) { return Math.abs(lat).toFixed(0) + '° ' + (lat >= 0 ? 'N' : 'S'); }
   // Illustration embarquée d'une espèce / d'un fossile (public/bio/<slug>.svg).
   bioImg(id) { return '/bio/' + (id === 'shark' ? 'shark-tooth' : id) + '.svg'; }
+  // Fossile : vraie photo (Wikimedia) si disponible, sinon illustration SVG.
+  fossilImg(id) { return this.fossilCredits[id] ? '/bio-photos/' + id + '.jpg' : this.bioImg(id); }
   histTemp = [[1421,-0.36],[1440,-0.40],[1460,-0.50],[1480,-0.45],[1500,-0.40],[1520,-0.35],[1540,-0.45],[1560,-0.55],[1580,-0.50],[1600,-0.60],[1620,-0.55],[1640,-0.62],[1660,-0.70],[1680,-0.66],[1700,-0.55],[1720,-0.40],[1740,-0.35],[1760,-0.45],[1780,-0.40],[1800,-0.46],[1810,-0.56],[1816,-0.62],[1820,-0.42],[1840,-0.40],[1860,-0.34],[1880,-0.30],[1900,-0.20],[1910,-0.26],[1920,-0.10],[1940,0.05],[1950,0.00],[1960,0.00],[1970,0.02],[1980,0.16],[1990,0.30],[2000,0.45],[2008,0.52]];
   histPrec = [[1421,2],[1450,-3],[1480,4],[1510,-2],[1540,-5],[1570,1],[1600,-6],[1630,-3],[1660,-7],[1690,-4],[1720,2],[1750,3],[1780,-1],[1800,-3],[1816,-8],[1820,-5],[1840,0],[1860,2],[1880,-2],[1900,1],[1920,3],[1940,-1],[1960,2],[1980,0],[2000,-3],[2008,-4]];
   histPres = [[1421,0.5],[1450,-0.8],[1480,0.3],[1510,1.0],[1540,-0.5],[1570,0.6],[1600,-1.2],[1630,0.4],[1660,-1.5],[1690,-0.7],[1720,0.8],[1750,1.1],[1780,-0.3],[1800,-0.6],[1820,-1.0],[1840,0.2],[1860,0.7],[1880,-0.4],[1900,0.3],[1920,0.9],[1940,0.1],[1960,0.5],[1980,-0.2],[2000,0.6],[2008,0.8]];
@@ -1199,6 +1201,19 @@ class PaleoApp extends React.Component {
       env: 'Plaines alluviales, troncs enfouis puis silicifiés',
       clim: 'Cernes = saisonnalité et stress hydrique passés' }
   ];
+
+  // Photos de fossiles (Wikimedia Commons). id -> attribution. Sans entrée => illustration SVG.
+  fossilCredits = {
+    ammonite: { artist: 'Amir Ali Iranshahi', license: 'CC0', source: 'https://commons.wikimedia.org/wiki/File:Polished_fossil_ammonite_003.jpg' },
+    trilobite: { artist: 'Gary Todd', license: 'CC0', source: 'https://commons.wikimedia.org/wiki/File:Fossil_Trilobite_(with_cast).jpg' },
+    fern: { artist: 'Woudloper', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:Pecopteris_arborescens.jpg' },
+    coral: { artist: 'James St. John', license: 'CC BY 2.0', source: 'https://commons.wikimedia.org/wiki/File:Hexagonaria_percarinata_(fossil_coral)_(Petoskey_Stone)_(Traverse_Group,_Middle_Devonian;_Michigan,_USA)_5.jpg' },
+    leaf: { artist: 'Daderot', license: 'CC0', source: 'https://commons.wikimedia.org/wiki/File:Acer_leaf,_Late_Early_Eocene,_Lost_Cabin_Age,_Green_River_Formation,_South_Bonanza,_Unitah_County,_Utah,_USA_-_Houston_Museum_of_Natural_Science_-_DSC01942.JPG' },
+    fish: { artist: 'Joe deSousa', license: 'CC0', source: 'https://commons.wikimedia.org/wiki/File:Knightia_Fossil_Fish_(20255016550).jpg' },
+    shark: { artist: 'James St. John', license: 'CC BY 2.0', source: 'https://commons.wikimedia.org/wiki/File:Carcharocles_megalodon_(fossil_shark_tooth)_(Yorktown_Formation,_Upper_Miocene_to_Lower_Pliocene;_offshore_North_Carolina,_USA)_1.jpg' },
+    amber: { artist: 'LucasFassari', license: 'CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Dominican_Amber_housing_an_Insect.jpg' },
+    wood: { artist: 'Michael Gäbler', license: 'CC BY 3.0', source: 'https://commons.wikimedia.org/wiki/File:Polished_slice_of_petrified_wood_(Large_Image).jpg' },
+  };
 
   glaciations = [
     { id: 'huron', name: 'Glaciation huronienne', color: '#3f7fa8', wash: '#e7f1f6', slot: 'glac-huron',
@@ -2027,9 +2042,9 @@ class PaleoApp extends React.Component {
       })(),
       isFossils: screen === 'fossils',
       goFossils: () => this.setState({ screen: 'fossils', fossilId: null, menuOpen: false }),
-      fossilCards: this.fossils.map(f => ({ ...f, img: this.bioImg(f.id), open: () => this.setState({ fossilId: f.id }) })),
+      fossilCards: this.fossils.map(f => ({ ...f, img: this.fossilImg(f.id), open: () => this.setState({ fossilId: f.id }) })),
       fossilList: !this.state.fossilId,
-      fo: this.state.fossilId ? (() => { const f = this.fossils.find(x => x.id === this.state.fossilId); return f ? { ...f, img: this.bioImg(f.id) } : null; })() : null,
+      fo: this.state.fossilId ? (() => { const f = this.fossils.find(x => x.id === this.state.fossilId); if (!f) return null; const cr = this.fossilCredits[f.id]; return { ...f, img: this.fossilImg(f.id), credit: cr ? { artist: cr.artist, license: cr.license, source: cr.source } : null }; })() : null,
       backToFossils: () => this.setState({ fossilId: null }),
       isGlaciations: screen === 'glaciations',
       goGlaciations: () => this.setState({ screen: 'glaciations', glacId: this.state.glacId || 'cryo', menuOpen: false }),

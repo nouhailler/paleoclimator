@@ -479,12 +479,14 @@ export function renderApp(v, self) {
           <div style={css(`flex:1;background:#fff;border:1px solid #e0eaef;border-radius:11px;padding:10px 11px`)}>
             <div style={css(`font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:#8aa5b3`)}>{v.mapPeriodLabel} · {v.mapPeriodAge}</div>
             <div style={css(`font-size:12.5px;font-weight:600;color:#0f2c3c;margin-top:4px;line-height:1.3`)}>{v.rgnEpochEmoji} {v.rgnEpochPhrase}</div>
-            { v.rgnEpochValue ? (<div style={css(`font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1d6f96;margin-top:3px`)}>{v.rgnEpochValue}</div>) : null }
+            <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:11px;color:#d97a52;margin-top:3px`)}>🌡️ {v.rgnEpochTemp}</div>
+            { v.rgnEpochValue ? (<div style={css(`font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1d6f96;margin-top:2px`)}>{v.rgnEpochValue}</div>) : null }
           </div>
           <div style={css(`flex:1;background:#fff;border:1px solid #e0eaef;border-radius:11px;padding:10px 11px`)}>
             <div style={css(`font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:#8aa5b3`)}>Aujourd'hui</div>
             <div style={css(`font-size:12.5px;font-weight:600;color:#0f2c3c;margin-top:4px;line-height:1.3`)}>{v.rgnTodayEmoji} {v.rgnTodayPhrase}</div>
-            { v.rgnTodayValue ? (<div style={css(`font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1d6f96;margin-top:3px`)}>{v.rgnTodayValue}</div>) : null }
+            <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:11px;color:#d97a52;margin-top:3px`)}>🌡️ {v.rgnTodayTemp}</div>
+            { v.rgnTodayValue ? (<div style={css(`font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1d6f96;margin-top:2px`)}>{v.rgnTodayValue}</div>) : null }
           </div>
         </div>
 

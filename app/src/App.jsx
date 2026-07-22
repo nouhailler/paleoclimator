@@ -560,6 +560,17 @@ class PaleoApp extends React.Component {
   iceThickness(lng, lat, ice, maxThk) { const f = Math.max(0, Math.min(1, this.edgeDistDeg(lng, lat, ice) / 12)); return 0.4 + f * (maxThk - 0.4); }
   fmtDepth(m) { return m >= 1000 ? (m / 1000).toFixed(1).replace('.', ',') + ' km' : (Math.round(m / 10) * 10) + ' m'; }
   fmtThk(km) { return km >= 1 ? km.toFixed(1).replace('.', ',') + ' km' : Math.round(km * 1000) + ' m'; }
+  // Température locale estimée (°C) : profil latitudinal actuel + anomalie globale de l'époque
+  // avec amplification polaire, moins l'altitude de la calotte si le lieu est sous la glace.
+  localTemp(lat, globalMean, state, iceThk) {
+    const Tmod = 27 - 0.0068 * lat * lat;                 // moyenne annuelle actuelle par latitude
+    const amp = 0.6 + 1.1 * (Math.abs(lat) / 90);         // les pôles amplifient l'anomalie
+    let T = Tmod + (globalMean - 15) * amp;
+    if (state === 'ice') T -= 6.5 * (iceThk || 0);        // surface de la calotte en altitude (gradient ~6,5 °C/km)
+    if (state === 'sea') T = Math.max(-2, T);             // plancher de la température de surface de la mer
+    return T;
+  }
+  fmtTemp(t) { const r = Math.round(t); return '≈ ' + (r === 0 ? 0 : r) + ' °C'; }
   presentLands = [
     [[-168,66],[-158,71],[-130,70],[-95,72],[-82,73],[-64,60],[-70,47],[-81,43],[-81,25],[-97,26],[-107,24],[-117,32],[-124,40],[-124,48],[-138,58],[-152,59],[-168,66]],
     [[-45,60],[-22,70],[-20,76],[-32,83],[-52,82],[-55,76],[-50,68],[-45,60]],
@@ -1599,13 +1610,13 @@ class PaleoApp extends React.Component {
     const periods = {
       pangea: { label: 'Pangée', age: '≈ 250 Ma', note: "À la limite Permien–Trias, les continents sont soudés en un supercontinent unique, la Pangée, ceinturé par l'océan Panthalassa. Climat de type serre, saisons continentales extrêmes, aucune calotte polaire pérenne.", pin: "se trouvait soudée aux autres terres au cœur de la Pangée — souvent loin de tout littoral.",
         st: { land: "Terre émergée — au cœur aride de la Pangée", sea: "Sous l'océan mondial Panthalassa", ice: "Sous une calotte polaire" },
-        depth: { shelf: 80, deep: 4200 }, iceMax: 2.6 },
+        depth: { shelf: 80, deep: 4200 }, iceMax: 2.6, ageMa: 250 },
       cretaceous: { label: 'Crétacé', age: '≈ 90 Ma', note: "L'Atlantique s'ouvre et la Téthys sépare les masses continentales. Le niveau marin culmine (~+250 m) : de vastes mers épicontinentales inondent les continents. Pôles sans glace, climat chaud.", pin: "bordait probablement des mers chaudes et peu profondes, sous un climat sans glace polaire.",
         st: { land: "Terre émergée, climat chaud sans glace", sea: "Sous une mer épicontinentale chaude", ice: "Sous la glace" },
-        depth: { shelf: 180, deep: 3800 }, iceMax: 3.0 },
+        depth: { shelf: 180, deep: 3800 }, iceMax: 3.0, ageMa: 90 },
       lgm: { label: 'Dernier Maximum Glaciaire', age: '≈ 21 ka', note: "Géographie quasi moderne, mais d'immenses calottes (Laurentide, Fennoscandienne) recouvrent l'Amérique du Nord et l'Europe du Nord. Le niveau marin ~120 m plus bas exonde la Manche et la Béringie.", pin: "connaissait un climat glaciaire ; les plateaux continentaux proches étaient souvent émergés.",
         st: { land: "Toundra / steppe périglaciaire", sea: "En mer (niveau ~120 m plus bas)", ice: "Sous la calotte" },
-        depth: { shelf: 50, deep: 3900 }, iceMax: 3.4 }
+        depth: { shelf: 50, deep: 3900 }, iceMax: 3.4, ageMa: 0.021 }
     };
     const per = periods[mapPeriod];
 
@@ -1636,12 +1647,18 @@ class PaleoApp extends React.Component {
     const seaShelfPhrase = { pangea: "Sous une mer côtière peu profonde", cretaceous: "Sous une mer épicontinentale chaude", lgm: "Sous une mer côtière" };
     const seaDeepPhrase = { pangea: "Au large, dans l'océan Panthalassa", cretaceous: "Au large, en océan ouvert", lgm: "Au large, en océan ouvert" };
     const rgnEpochPhrase = rgnEpochSt === 'sea' ? (onContinent ? seaShelfPhrase[mapPeriod] : seaDeepPhrase[mapPeriod]) : per.st[rgnEpochSt];
+    const epochIceThk = this.iceThickness(pinLng, pinLat, mapCfg.ice, per.iceMax);
+    const todayIceThk = this.iceThickness(pinLng, pinLat, gpToday.ice, pinLat < -55 ? 3.6 : 2.9);
     const rgnEpochValue = rgnEpochSt === 'sea'
       ? '≈ ' + this.fmtDepth(onContinent ? per.depth.shelf : per.depth.deep) + " d'eau"
-      : rgnEpochSt === 'ice' ? '≈ ' + this.fmtThk(this.iceThickness(pinLng, pinLat, mapCfg.ice, per.iceMax)) + ' de glace' : '';
+      : rgnEpochSt === 'ice' ? '≈ ' + this.fmtThk(epochIceThk) + ' de glace' : '';
     const rgnTodayValue = rgnTodaySt === 'sea'
       ? '≈ ' + this.fmtDepth(3800) + " d'eau (océan)"
-      : rgnTodaySt === 'ice' ? '≈ ' + this.fmtThk(this.iceThickness(pinLng, pinLat, gpToday.ice, pinLat < -55 ? 3.6 : 2.9)) + ' de glace' : '';
+      : rgnTodaySt === 'ice' ? '≈ ' + this.fmtThk(todayIceThk) + ' de glace' : '';
+    // Températures locales estimées (époque vs aujourd'hui).
+    const epGlobalT = this.interp(this.cTemp, per.ageMa);
+    const rgnEpochTemp = this.fmtTemp(this.localTemp(pinLat, epGlobalT, rgnEpochSt, epochIceThk));
+    const rgnTodayTemp = this.fmtTemp(this.localTemp(pinLat, 15, rgnTodaySt, todayIceThk));
 
     // proxies gallery
     const { proxy, grow, playing } = this.state;
@@ -2150,7 +2167,7 @@ class PaleoApp extends React.Component {
       rgnTodayIce: rgnTodaySt === 'ice', rgnTodaySea: rgnTodaySt === 'sea', rgnTodayLand: rgnTodaySt === 'land',
       rgnEpochEmoji: stEmoji[rgnEpochSt], rgnTodayEmoji: stEmoji[rgnTodaySt],
       rgnEpochPhrase, rgnTodayPhrase: stTodayPhrase[rgnTodaySt],
-      rgnEpochValue, rgnTodayValue,
+      rgnEpochValue, rgnTodayValue, rgnEpochTemp, rgnTodayTemp,
       rgnEpochOcean: mapCfg.ocean, rgnEpochLandCol: mapCfg.land,
       rgnTodayOcean: gpToday.ocean, rgnTodayLandCol: gpToday.land,
       rgnSame: rgnEpochSt === rgnTodaySt,

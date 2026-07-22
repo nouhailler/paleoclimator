@@ -9,7 +9,7 @@ import { renderApp } from "./render.jsx"
 // ============================================================================
 
 class PaleoApp extends React.Component {
-  state = { screen: 'home', menuOpen: false, eraId: 0, age: 0, tmRange: 'full', tmScrub: 1000, evt: null, mapPeriod: 'pangea', reveal: 50, pinX: 52, pinY: 46, pinLabel: 'Votre région', dragging: false, proxy: null, grow: 100, playing: false, extreme: null, dsOn: { epica: true, sea: true, lr04: true }, shiftDs: 'sea', shiftKa: 0, dCalcite: '-1.5', dWater: '0.0', eqId: 'shack', ecc: 1.67, obl: 23.44, prec: 283, season: 90, glossQ: '', glossCat: 'Tous', site: null, siteCat: 'Tous', addMode: false, userSites: [], helpOpen: false, globePeriod: 4, globeRotate: true, geoQ: '', geoSel: null, histYear: 2008, storyId: 0, extinctId: null, atlasId: null, sciId: null };
+  state = { screen: 'home', menuOpen: false, eraId: 0, age: 0, tmRange: 'full', tmScrub: 1000, evt: null, mapPeriod: 'pangea', reveal: 50, pinX: 52, pinY: 46, pinLabel: 'Votre région', dragging: false, proxy: null, grow: 100, playing: false, extreme: null, dsOn: { epica: true, sea: true, lr04: true }, shiftDs: 'sea', shiftKa: 0, dCalcite: '-1.5', dWater: '0.0', eqId: 'shack', ecc: 1.67, obl: 23.44, prec: 283, season: 90, glossQ: '', glossCat: 'Tous', site: null, siteCat: 'Tous', addMode: false, userSites: [], helpOpen: false, globePeriod: 4, globeRotate: true, geoQ: '', geoSel: null, histYear: 2008, storyId: 0, extinctId: null, atlasId: null, sciId: null, catMenu: null };
   globeRef = React.createRef();
   mapRef = React.createRef();
   cmpRef = React.createRef();
@@ -1534,7 +1534,7 @@ class PaleoApp extends React.Component {
       { group: 'Comprendre', icon: 'Aa', label: 'Glossaire du jargon', sub: 'Décoder les articles', screen: 'glossary' }
     ];
     const mkItem = n => ({
-      ...n, go: () => this.setState({ screen: n.screen, menuOpen: false }),
+      ...n, go: () => { this.setState({ screen: n.screen, menuOpen: false, catMenu: null }); if (this.scrollRef && this.scrollRef.current) this.scrollRef.current.scrollTop = 0; },
       active: screen === n.screen,
       style: { display: 'flex', alignItems: 'center', gap: 11, padding: '10px 11px', borderRadius: 10, marginBottom: 3, cursor: 'pointer', background: screen === n.screen ? 'rgba(111,178,209,0.16)' : 'transparent', borderLeft: '3px solid ' + (screen === n.screen ? '#6fb2d1' : 'transparent') },
       iconStyle: { flexShrink: 0, width: 26, height: 26, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'IBM Plex Mono',monospace", fontSize: 13, fontWeight: 600, background: screen === n.screen ? 'rgba(111,178,209,0.28)' : 'rgba(143,180,198,0.14)', color: screen === n.screen ? '#bfe2f0' : '#8fb4c6' }
@@ -1542,6 +1542,33 @@ class PaleoApp extends React.Component {
     const groupOrder = ['Explorer', 'Bases de données', 'Cartes & sites', 'Portraits', 'Outils d\'analyse', 'Comprendre'];
     const navGroups = groupOrder.map(g => ({ title: g, items: nav.filter(n => n.group === g).map(mkItem) }));
     const navItems = nav.map(mkItem);
+
+    // Barre de catégories en bas d'écran : chaque catégorie du tiroir devient un onglet.
+    const catMeta = {
+      'Explorer': { icon: '🧭', short: 'Explorer' },
+      'Bases de données': { icon: '🗂️', short: 'Bases' },
+      'Cartes & sites': { icon: '🗺️', short: 'Cartes' },
+      'Portraits': { icon: '👥', short: 'Portraits' },
+      "Outils d'analyse": { icon: '🔬', short: 'Outils' },
+      'Comprendre': { icon: '📖', short: 'Comprendre' },
+    };
+    // Écrans « détail » sans entrée de nav propre → rattachés à leur catégorie logique.
+    const screenGroupExtra = { era: 'Explorer' };
+    const navScreenGroup = {};
+    for (const n of nav) navScreenGroup[n.screen] = n.group;
+    const activeCat = navScreenGroup[screen] || screenGroupExtra[screen] || null;
+    const bottomCats = groupOrder.map(g => {
+      const active = activeCat === g;
+      return {
+        title: g, icon: catMeta[g].icon, label: catMeta[g].short, active,
+        open: () => this.setState(s => ({ catMenu: s.catMenu === g ? null : g })),
+        style: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, padding: '7px 2px 6px', cursor: 'pointer', background: 'transparent', borderTop: '2px solid ' + (active ? '#6fb2d1' : 'transparent'), color: active ? '#0c2534' : '#5f829a', transition: 'color .15s' },
+        iconStyle: { fontSize: 17, lineHeight: 1, opacity: active ? 1 : 0.72, filter: active ? 'none' : 'grayscale(0.3)' },
+        labelStyle: { fontSize: 9, fontWeight: active ? 700 : 500, letterSpacing: '.2px', whiteSpace: 'nowrap' },
+      };
+    });
+    const catMenu = this.state.catMenu;
+    const catGroup = catMenu ? navGroups.find(gr => gr.title === catMenu) : null;
 
     // paleogeographic maps
     const { mapPeriod, reveal, pinX, pinY, pinLabel } = this.state;
@@ -2077,6 +2104,14 @@ class PaleoApp extends React.Component {
       helpSheetStyle: { position: 'absolute', left: 0, right: 0, bottom: 0, maxHeight: '82%', display: 'flex', flexDirection: 'column', background: '#fff', zIndex: 51, borderRadius: '20px 20px 0 0', transform: this.state.helpOpen ? 'translateY(0)' : 'translateY(102%)', transition: 'transform .3s cubic-bezier(.4,0,.2,1)', boxShadow: '0 -8px 30px rgba(8,24,34,0.25)' },
       navItems,
       navGroups,
+      // barre de catégories (bas d'écran) + feuille de sous-menu
+      bottomCats,
+      catSheetOpen: !!catMenu,
+      catSheetTitle: catMenu || '',
+      catSheetItems: catGroup ? catGroup.items : [],
+      closeCatSheet: () => this.setState({ catMenu: null }),
+      catScrimStyle: { position: 'absolute', inset: 0, background: 'rgba(8,24,34,0.5)', zIndex: 44, transition: 'opacity .25s', opacity: catMenu ? 1 : 0, pointerEvents: catMenu ? 'auto' : 'none' },
+      catSheetStyle: { position: 'absolute', left: 0, right: 0, bottom: 0, maxHeight: '72%', display: 'flex', flexDirection: 'column', background: '#0c2534', zIndex: 45, borderRadius: '20px 20px 0 0', transform: catMenu ? 'translateY(0)' : 'translateY(102%)', transition: 'transform .28s cubic-bezier(.4,0,.2,1)', boxShadow: '0 -8px 30px rgba(0,0,0,0.4)' },
       menuScrimStyle: { position: 'absolute', inset: 0, background: 'rgba(8,24,34,0.5)', zIndex: 40, transition: 'opacity .25s', opacity: menuOpen ? 1 : 0, pointerEvents: menuOpen ? 'auto' : 'none' },
       menuPanelStyle: { position: 'absolute', top: 0, left: 0, bottom: 0, width: '80%', maxWidth: 300, background: '#0c2534', zIndex: 41, transform: menuOpen ? 'translateX(0)' : 'translateX(-102%)', transition: 'transform .28s cubic-bezier(.4,0,.2,1)', boxShadow: '8px 0 30px rgba(0,0,0,0.35)', display: 'flex', flexDirection: 'column' },
       // time machine

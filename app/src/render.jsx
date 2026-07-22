@@ -1753,6 +1753,36 @@ export function renderApp(v, self) {
     </div>
 
 
+    <div style={css(`flex-shrink:0;display:flex;background:#fff;border-top:1px solid #dbe7ec;box-shadow:0 -2px 12px rgba(15,44,60,0.06);padding-bottom:env(safe-area-inset-bottom);z-index:30`)}>
+      { (v.bottomCats || []).map((c, __k1) => (<React.Fragment key={__k1}>
+        <div onClick={c.open} style={c.style}>
+          <div style={c.iconStyle}>{c.icon}</div>
+          <div style={c.labelStyle}>{c.label}</div>
+        </div>
+      </React.Fragment>)) }
+    </div>
+
+
+    <div onClick={v.closeCatSheet} style={v.catScrimStyle}></div>
+    <div style={v.catSheetStyle}>
+      <div style={css(`padding:16px 18px 10px;display:flex;align-items:center;justify-content:space-between`)}>
+        <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#8fb4c6;font-weight:600`)}>{v.catSheetTitle}</div>
+        <div onClick={v.closeCatSheet} style={css(`width:26px;height:26px;border-radius:50%;border:1px solid rgba(143,180,198,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:#eaf3f7;cursor:pointer`)}>✕</div>
+      </div>
+      <div style={css(`padding:2px 10px 22px;overflow-y:auto`)}>
+        { (v.catSheetItems || []).map((nav, __k1) => (<React.Fragment key={__k1}>
+          <div onClick={nav.go} style={nav.style}>
+            <div style={nav.iconStyle}>{nav.icon}</div>
+            <div style={css(`min-width:0`)}>
+              <div style={css(`font-size:13.5px;font-weight:600;color:#eaf3f7;line-height:1.15`)}>{nav.label}</div>
+              <div style={css(`font-size:10px;color:#8fb4c6;margin-top:2px`)}>{nav.sub}</div>
+            </div>
+          </div>
+        </React.Fragment>)) }
+      </div>
+    </div>
+
+
     { v.siteOpen ? (<>
     <div onClick={v.closeSite} style={css(`position:absolute;inset:0;background:rgba(8,24,34,0.55);z-index:50`)}></div>
     <div style={css(`position:absolute;left:0;right:0;bottom:0;z-index:51;background:#fff;border-radius:18px 18px 0 0;padding:16px 18px 24px;box-shadow:0 -8px 30px rgba(0,0,0,0.28)`)}>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <rect width="240" height="160" fill="#d8cdb0"/>
+  <!-- dalle rocheuse -->
+  <g opacity="0.3" stroke="#9c8a66" stroke-width="1.4" fill="none"><path d="M0 30 Q120 22 240 34 M0 132 Q120 124 240 138"/></g>
+  <g opacity="0.2" fill="#b8a67e"><ellipse cx="60" cy="120" rx="30" ry="6"/><ellipse cx="185" cy="45" rx="24" ry="5"/></g>
+  <!-- poisson fossile (empreinte) -->
+  <g transform="translate(120,84)" fill="none" stroke="#5c4a34" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-78,0 Q-40,-30 40,-24 Q80,-20 96,-2 Q80,16 40,22 Q-40,28 -78,0 Z" fill="#8a7a5f" stroke-width="2.5"/>
+    <!-- queue -->
+    <path d="M-78,0 Q-98,-18 -104,-14 Q-92,-4 -96,0 Q-92,4 -104,14 Q-98,18 -78,0 Z" fill="#8a7a5f" stroke-width="2"/>
+    <!-- colonne + arêtes -->
+    <path d="M-70,0 H86" stroke-width="2.5"/>
+    <g stroke-width="1.4" opacity="0.85"><path d="M-50,0 l-8,-16 M-50,0 l-8,16 M-30,0 l-8,-18 M-30,0 l-8,18 M-8,0 l-8,-19 M-8,0 l-8,19 M14,0 l-6,-18 M14,0 l-6,18 M36,0 l-6,-16 M36,0 l-6,16 M56,0 l-5,-13 M56,0 l-5,13"/></g>
+    <!-- tête + œil -->
+    <path d="M70,-12 Q92,-6 96,-2 Q92,2 70,12" stroke-width="2.5"/>
+    <circle cx="80" cy="-2" r="4" fill="#5c4a34"/>
+    <!-- nageoire dorsale -->
+    <path d="M6,-22 q10,-14 26,-16 q-6,10 -4,20" stroke-width="2"/>
+  </g>
+</svg>

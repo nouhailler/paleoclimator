@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs><linearGradient id="lf-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2d8bc"/><stop offset="1" stop-color="#c7b78e"/></linearGradient></defs>
+  <rect width="240" height="160" fill="url(#lf-bg)"/>
+  <g opacity="0.3" stroke="#9c8a66" stroke-width="1.4" fill="none"><path d="M0 36 Q120 28 240 40 M0 128 Q120 120 240 132"/></g>
+  <!-- empreinte de feuille -->
+  <g transform="translate(120,82) rotate(-18)">
+    <path d="M-78,0 Q-40,-40 30,-34 Q78,-28 92,0 Q78,28 30,34 Q-40,40 -78,0 Z" fill="#7d8a54"/>
+    <path d="M-78,0 Q-40,-40 30,-34 Q78,-28 92,0 Q78,28 30,34 Q-40,40 -78,0 Z" fill="none" stroke="#5c6b3a" stroke-width="2"/>
+    <!-- nervure centrale + secondaires -->
+    <path d="M-78,0 H90" stroke="#5c6b3a" stroke-width="2.5" fill="none"/>
+    <g stroke="#5c6b3a" stroke-width="1.2" fill="none" opacity="0.8">
+      <path d="M-50,0 q6,-14 24,-20 M-50,0 q6,14 24,20 M-24,0 q6,-16 26,-22 M-24,0 q6,16 26,22 M4,0 q6,-14 24,-20 M4,0 q6,14 24,20 M32,0 q6,-12 22,-16 M32,0 q6,12 22,16"/>
+    </g>
+    <!-- pétiole -->
+    <path d="M-78,0 h-14" stroke="#5c6b3a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

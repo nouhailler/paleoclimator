@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs><linearGradient id="mg-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a7d92"/><stop offset="1" stop-color="#16465a"/></linearGradient></defs>
+  <rect width="240" height="160" fill="url(#mg-bg)"/>
+  <g opacity="0.15" fill="#ffffff"><polygon points="50,0 66,0 58,160 42,160"/><polygon points="150,0 160,0 158,160 140,160"/></g>
+  <!-- requin géant silhouette -->
+  <g fill="#2a5566">
+    <path d="M20,86 Q70,58 130,66 Q186,72 214,58 Q206,80 214,100 Q184,92 130,98 Q72,104 20,86 Z"/>
+    <!-- nageoire dorsale -->
+    <path d="M110,66 Q118,34 138,40 Q126,52 130,66 Z"/>
+    <!-- nageoire pectorale -->
+    <path d="M96,92 Q92,116 116,120 Q108,102 112,94 Z"/>
+    <!-- queue -->
+    <path d="M20,86 Q4,64 8,58 Q22,74 30,80 Q22,90 30,98 Q10,102 6,110 Q4,96 20,86 Z"/>
+  </g>
+  <!-- ventre clair -->
+  <path d="M40,90 Q100,102 150,96 Q120,100 60,95 Z" fill="#7fa8b4" opacity="0.6"/>
+  <!-- œil + branchies -->
+  <circle cx="196" cy="76" r="4" fill="#0c2534"/>
+  <g stroke="#16465a" stroke-width="2"><path d="M170,72 v14 M176,71 v16 M182,70 v17"/></g>
+  <!-- dents -->
+  <g fill="#eef7fb"><path d="M214,86 l-5,8 l-5,-8 Z"/><path d="M204,88 l-4,7 l-4,-7 Z"/></g>
+</svg>

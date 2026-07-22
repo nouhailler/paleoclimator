@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs><linearGradient id="tk-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe2d8"/><stop offset="0.6" stop-color="#b7cdbe"/><stop offset="1" stop-color="#9cb8b0"/></linearGradient></defs>
+  <rect width="240" height="160" fill="url(#tk-bg)"/>
+  <!-- eau à gauche, berge à droite -->
+  <path d="M0,150 Q80,120 240,132 L240,160 L0,160 Z" fill="#7fa08f"/>
+  <path d="M0,150 Q60,132 120,140 L120,160 L0,160 Z" fill="#6f97b0" opacity="0.55"/>
+  <!-- tiktaalik : poisson à membres (fishapod) -->
+  <g transform="translate(118,96)" fill="#3f6b52">
+    <!-- corps -->
+    <path d="M-70,-6 Q-30,-24 30,-20 Q70,-16 92,-4 Q78,-2 70,-2 Q40,-4 -6,0 Q-40,4 -70,-6 Z"/>
+    <!-- tête plate large (crocodile-like) -->
+    <path d="M60,-16 Q96,-12 104,-2 Q96,6 66,6 Q78,-4 60,-16 Z"/>
+    <circle cx="86" cy="-6" r="3.5" fill="#1f3a2c"/>
+    <!-- queue -->
+    <path d="M-70,-6 Q-96,-16 -104,-12 Q-92,-4 -96,0 Q-88,6 -104,14 Q-96,16 -70,-6 Z"/>
+    <!-- membres/nageoires robustes (précurseurs de pattes) -->
+    <path d="M20,2 q4,16 -6,26 q-2,-4 -6,-6 q6,-8 4,-18 Z" fill="#345a44"/>
+    <path d="M-24,2 q2,16 -8,24 q-2,-4 -6,-6 q6,-8 6,-16 Z" fill="#345a44"/>
+    <!-- écailles -->
+    <g stroke="#345a44" stroke-width="1" opacity="0.6" fill="none"><path d="M-40,-8 q6,4 0,10 M-20,-10 q6,4 0,12 M0,-10 q6,4 0,12 M20,-10 q6,4 0,10"/></g>
+  </g>
+</svg>

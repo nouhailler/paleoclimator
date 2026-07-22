@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs><linearGradient id="ar-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dfe6cb"/><stop offset="1" stop-color="#b9c79a"/></linearGradient></defs>
+  <rect width="240" height="160" fill="url(#ar-bg)"/>
+  <path d="M0,132 Q120,122 240,132 L240,160 L0,160 Z" fill="#5f7a4a"/>
+  <!-- litière forestière humide + prêles -->
+  <g stroke="#4f6b3a" stroke-width="4" stroke-linecap="round"><path d="M26,150 V96"/><path d="M214,150 V90"/></g>
+  <g stroke="#3f5a2e" stroke-width="1.5" opacity="0.6"><path d="M26,120 h-8 M26,110 h9 M26,132 h-8 M214,116 h9 M214,128 h-9"/></g>
+  <!-- mille-pattes géant (arthropleura) sinueux -->
+  <g fill="#7d5bb0" stroke="#5a3f88" stroke-width="1.5">
+    <path d="M8,84 Q40,60 72,84 Q104,108 136,84 Q168,60 200,84 Q216,96 232,88 L232,104 Q214,112 198,100 Q168,76 136,100 Q104,124 72,100 Q40,76 12,100 Z"/>
+  </g>
+  <!-- segments -->
+  <g stroke="#4a3270" stroke-width="1.4" fill="none" opacity="0.8">
+    <path d="M28,74 q6,10 0,20 M52,68 q6,10 0,22 M80,80 q6,10 0,22 M108,96 q6,10 0,20 M136,74 q6,10 0,22 M164,68 q6,10 0,22 M192,80 q6,10 0,22"/>
+  </g>
+  <!-- pattes -->
+  <g stroke="#4a3270" stroke-width="1.6" stroke-linecap="round"><path d="M24,102 l-4,10 M40,110 l-2,10 M64,104 l0,10 M92,112 l2,10 M120,110 l4,10 M148,104 l0,10 M176,110 l-2,10 M204,104 l4,10"/></g>
+  <circle cx="14" cy="86" r="3" fill="#2f1f4a"/>
+</svg>

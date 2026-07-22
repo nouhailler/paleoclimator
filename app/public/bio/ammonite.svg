@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs><linearGradient id="am-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe6f0"/><stop offset="1" stop-color="#8fc0d6"/></linearGradient></defs>
+  <rect width="240" height="160" fill="url(#am-bg)"/>
+  <g opacity="0.25" stroke="#ffffff" stroke-width="2" fill="none"><path d="M0 128 Q60 120 120 128 T240 126"/><path d="M0 142 Q60 134 120 142 T240 140"/></g>
+  <g transform="translate(0,4)" fill="none" stroke-linecap="round">
+    <path d="M180,80 A60,60 0 0 1 60,80 A52,52 0 0 1 164,80 A45,45 0 0 1 74,80 A38,38 0 0 1 150,80 A31,31 0 0 1 88,80 A24,24 0 0 1 136,80 A17,17 0 0 1 102,80" stroke="#8a6fb0" stroke-width="15"/>
+    <path d="M180,80 A60,60 0 0 1 60,80 A52,52 0 0 1 164,80 A45,45 0 0 1 74,80 A38,38 0 0 1 150,80 A31,31 0 0 1 88,80 A24,24 0 0 1 136,80 A17,17 0 0 1 102,80" stroke="#b79ad6" stroke-width="6"/>
+    <g stroke="#6f5595" stroke-width="1.4" opacity="0.7">
+      <path d="M120,20 q6,20 0,40"/><path d="M170,40 q-14,16 -30,24"/><path d="M186,86 q-22,2 -42,-4"/><path d="M150,132 q-10,-18 -18,-30"/><path d="M84,128 q10,-16 22,-24"/><path d="M56,84 q20,-4 40,2"/><path d="M70,38 q14,14 28,22"/>
+    </g>
+  </g>
+</svg>

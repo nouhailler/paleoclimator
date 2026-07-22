@@ -982,7 +982,7 @@ export function renderApp(v, self) {
 
           { (v.speciesCards || []).map((s, __k1) => (<React.Fragment key={__k1}>
             <div onClick={s.open} style={css(`display:flex;gap:0;margin-bottom:9px;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(15,44,60,0.06),0 8px 20px rgba(15,44,60,0.05);cursor:pointer;border:1px solid #e0eaef`)}>
-              <div style={css(`width:48px;flex-shrink:0;background:${s.wash};display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:${s.color}`)}>{s.icon}</div>
+              <div style={css(`width:78px;flex-shrink:0;background:${s.wash};overflow:hidden`)}><img src={s.img} alt={s.name} loading="lazy" style={css(`width:100%;height:100%;object-fit:cover;display:block`)} /></div>
               <div style={css(`flex:1;padding:12px 14px;min-width:0`)}>
                 <div style={css(`font-family:'Spectral',serif;font-size:15.5px;font-weight:600;color:#0f2c3c`)}>{s.name}</div>
                 <div style={css(`font-size:11.5px;line-height:1.4;color:#4d6c7d;margin-top:3px`)}>{s.tag}</div>
@@ -996,6 +996,9 @@ export function renderApp(v, self) {
         { v.sp ? (<>
         <div>
           <div onClick={v.backToSpecies} style={css(`font-size:11px;color:#38617a;font-weight:500;margin-bottom:12px;cursor:pointer`)}>‹ Toutes les espèces</div>
+          <div style={css(`height:168px;border-radius:16px;overflow:hidden;border:1px solid #e0eaef;margin-bottom:14px;background:${v.sp.wash}`)}>
+            <img src={v.sp.img} alt={v.sp.name} style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
+          </div>
           <div style={css(`display:flex;align-items:center;gap:12px;margin-bottom:16px`)}>
             <div style={css(`width:56px;height:56px;flex-shrink:0;border-radius:14px;background:${v.sp.wash};display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:600;color:${v.sp.color}`)}>{v.sp.icon}</div>
             <div style={css(`min-width:0`)}>
@@ -1117,7 +1120,7 @@ export function renderApp(v, self) {
           <div style={css(`display:flex;flex-direction:column;gap:11px`)}>
             { (v.extinctCards || []).map((e, __k1) => (<React.Fragment key={__k1}>
               <div onClick={e.open} style={css(`display:flex;gap:13px;align-items:center;background:#fff;border:1px solid #e0eaef;border-radius:14px;padding:13px 14px;cursor:pointer;box-shadow:0 1px 2px rgba(15,44,60,0.05),0 8px 20px rgba(15,44,60,0.04)`)}>
-                <div style={css(`width:52px;height:52px;flex-shrink:0;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:27px;background:${e.wash}`)}>{e.emoji}</div>
+                <div style={css(`width:64px;height:52px;flex-shrink:0;border-radius:11px;overflow:hidden;background:${e.wash}`)}><img src={e.img} alt={e.name} loading="lazy" style={css(`width:100%;height:100%;object-fit:cover;display:block`)} /></div>
                 <div style={css(`min-width:0;flex:1`)}>
                   <div style={css(`display:flex;align-items:center;gap:7px`)}>
                     <div style={css(`font-family:'Spectral',serif;font-size:16px;font-weight:600;color:#0f2c3c`)}>{e.name}</div>
@@ -1140,7 +1143,7 @@ export function renderApp(v, self) {
 
           
           <div style={css(`height:186px;border-radius:16px;overflow:hidden;background:${v.ex2.wash};position:relative;border:1px solid #e0eaef`)}>
-            <ImageSlot ph="{{ ex2.ph }}" fill />
+            <img src={v.ex2.img} alt={v.ex2.name} style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
             <div style={css(`position:absolute;top:10px;right:10px;${v.ex2.badgeStyle}`)}>{v.ex2.badge}</div>
           </div>
           <div style={css(`display:flex;align-items:center;gap:11px;margin-top:12px`)}>
@@ -1328,8 +1331,8 @@ export function renderApp(v, self) {
           <div style={css(`display:grid;grid-template-columns:1fr 1fr;gap:11px`)}>
             { (v.fossilCards || []).map((f, __k1) => (<React.Fragment key={__k1}>
               <div onClick={f.open} style={css(`border-radius:13px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(15,44,60,0.06),0 8px 20px rgba(15,44,60,0.05);cursor:pointer;border:1px solid #e0eaef`)}>
-                <div style={css(`height:104px;background:${f.wash};position:relative`)}>
-                  <ImageSlot ph="{{ f.ph }}" fill />
+                <div style={css(`height:104px;background:${f.wash};position:relative;overflow:hidden`)}>
+                  <img src={f.img} alt={f.name} loading="lazy" style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
                 </div>
                 <div style={css(`padding:9px 11px 11px`)}>
                   <div style={css(`font-family:'Spectral',serif;font-size:14px;font-weight:600;color:#0f2c3c;line-height:1.15`)}>{f.name}</div>
@@ -1345,7 +1348,7 @@ export function renderApp(v, self) {
         <div>
           <div onClick={v.backToFossils} style={css(`font-size:11px;color:#38617a;font-weight:500;margin-bottom:12px;cursor:pointer`)}>‹ Tous les fossiles</div>
           <div style={css(`height:200px;border-radius:16px;overflow:hidden;background:${v.fo.wash};position:relative;border:1px solid #e0eaef;margin-bottom:14px`)}>
-            <ImageSlot ph="{{ fo.ph }}" fill />
+            <img src={v.fo.img} alt={v.fo.name} style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
           </div>
           <div style={css(`font-family:'Spectral',serif;font-size:23px;font-weight:600;line-height:1.1;color:#0f2c3c`)}>{v.fo.name}</div>
           <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:${v.fo.color};margin-top:4px;margin-bottom:14px`)}>{v.fo.taxon}</div>

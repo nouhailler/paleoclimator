@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <rect width="240" height="160" fill="#33302a"/>
+  <!-- schiste houiller sombre -->
+  <g opacity="0.4" stroke="#1c1a16" stroke-width="2" fill="none"><path d="M0 34 H240 M0 132 H240"/></g>
+  <g opacity="0.15" fill="#4a4640"><rect x="0" y="70" width="240" height="24"/></g>
+  <!-- empreinte de fronde (impression claire) -->
+  <g transform="translate(120,80) rotate(-14)" stroke="#8fa06a" fill="none" stroke-linecap="round">
+    <path d="M-92,0 H92" stroke-width="4"/>
+    <g stroke-width="2.5">
+      <!-- pennes de chaque côté du rachis -->
+      <path d="M-80,0 q-10,-18 -30,-22 M-80,0 q-10,18 -30,22"/>
+      <path d="M-58,0 q-8,-18 -26,-24 M-58,0 q-8,18 -26,24"/>
+      <path d="M-34,0 q-8,-20 -24,-26 M-34,0 q-8,20 -24,26"/>
+      <path d="M-8,0 q-6,-20 -22,-28 M-8,0 q-6,20 -22,28"/>
+      <path d="M18,0 q-6,-20 -20,-28 M18,0 q-6,20 -20,28"/>
+      <path d="M44,0 q-6,-18 -18,-26 M44,0 q-6,18 -18,26"/>
+      <path d="M68,0 q-6,-16 -16,-22 M68,0 q-6,16 -16,22"/>
+    </g>
+    <path d="M84,0 q0,-10 8,-16 M84,0 q0,10 8,16" stroke-width="2"/>
+  </g>
+  <text x="120" y="150" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#8fa06a" opacity="0.6">empreinte dans le charbon</text>
+</svg>

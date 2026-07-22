@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs>
+    <radialGradient id="fo-bg" cx="0.5" cy="0.45" r="0.7"><stop offset="0" stop-color="#eaf3f8"/><stop offset="1" stop-color="#9cc0d4"/></radialGradient>
+    <radialGradient id="fo-ch" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#f4f9fc"/><stop offset="1" stop-color="#c3d7e2"/></radialGradient>
+  </defs>
+  <rect width="240" height="160" fill="url(#fo-bg)"/>
+  <circle cx="120" cy="80" r="66" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.5" stroke-dasharray="4 5"/>
+  <!-- test à loges en spirale (globigérine) -->
+  <g stroke="#5f829a" stroke-width="1.6">
+    <circle cx="132" cy="90" r="30" fill="url(#fo-ch)"/>
+    <circle cx="104" cy="94" r="24" fill="url(#fo-ch)"/>
+    <circle cx="96" cy="70" r="19" fill="url(#fo-ch)"/>
+    <circle cx="114" cy="56" r="15" fill="url(#fo-ch)"/>
+    <circle cx="132" cy="62" r="11" fill="url(#fo-ch)"/>
+    <circle cx="138" cy="76" r="8" fill="url(#fo-ch)"/>
+  </g>
+  <!-- pores -->
+  <g fill="#5f829a" opacity="0.4"><circle cx="140" cy="96" r="1.4"/><circle cx="128" cy="100" r="1.4"/><circle cx="120" cy="90" r="1.4"/><circle cx="146" cy="84" r="1.2"/><circle cx="100" cy="100" r="1.2"/></g>
+  <text x="120" y="150" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4d6c7d" opacity="0.7">≈ 0,5 mm</text>
+</svg>

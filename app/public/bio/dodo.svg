@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs><linearGradient id="do-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef0d8"/><stop offset="1" stop-color="#d3d6a8"/></linearGradient></defs>
+  <rect width="240" height="160" fill="url(#do-bg)"/>
+  <path d="M0,134 Q120,124 240,134 L240,160 L0,160 Z" fill="#8aa15a"/>
+  <!-- feuillage tropical -->
+  <g stroke="#5f7d3a" stroke-width="3" fill="none" stroke-linecap="round"><path d="M220,150 q6,-24 -8,-40 M220,150 q2,-28 12,-40"/></g>
+  <!-- dodo -->
+  <g transform="translate(112,86)">
+    <!-- corps dodu -->
+    <ellipse cx="0" cy="14" rx="46" ry="40" fill="#8a7a3c"/>
+    <!-- plumes queue -->
+    <path d="M-40,-4 q-24,-8 -34,4 q18,2 24,8 q-16,2 -22,12 q20,-2 30,-6 Z" fill="#c9bd86"/>
+    <!-- cou + tête -->
+    <path d="M34,-8 Q46,-30 40,-46 Q54,-48 60,-34 Q64,-18 52,-4 Z" fill="#9a8a4c"/>
+    <ellipse cx="52" cy="-40" rx="16" ry="14" fill="#a89a5c"/>
+    <circle cx="56" cy="-42" r="3" fill="#2f2812"/>
+    <!-- bec crochu -->
+    <path d="M64,-40 Q84,-38 82,-26 Q76,-24 68,-30 Q66,-36 64,-40 Z" fill="#6d5a2f"/>
+    <!-- pattes -->
+    <g stroke="#8a6a3a" stroke-width="4" stroke-linecap="round"><path d="M-12,52 V70 M14,52 V70"/></g>
+    <g stroke="#8a6a3a" stroke-width="2.5" stroke-linecap="round"><path d="M-12,70 l-7,5 M-12,70 l0,7 M-12,70 l7,5 M14,70 l-7,5 M14,70 l0,7 M14,70 l7,5"/></g>
+    <!-- aile atrophiée -->
+    <path d="M-6,4 q22,-4 34,8 q-16,4 -30,2 Z" fill="#7a6a34" opacity="0.7"/>
+  </g>
+</svg>

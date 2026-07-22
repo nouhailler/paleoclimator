@@ -703,6 +703,8 @@ class PaleoApp extends React.Component {
     return la + ' · ' + lo;
   }
   fmtLat(lat) { return Math.abs(lat).toFixed(0) + '° ' + (lat >= 0 ? 'N' : 'S'); }
+  // Illustration embarquée d'une espèce / d'un fossile (public/bio/<slug>.svg).
+  bioImg(id) { return '/bio/' + (id === 'shark' ? 'shark-tooth' : id) + '.svg'; }
   histTemp = [[1421,-0.36],[1440,-0.40],[1460,-0.50],[1480,-0.45],[1500,-0.40],[1520,-0.35],[1540,-0.45],[1560,-0.55],[1580,-0.50],[1600,-0.60],[1620,-0.55],[1640,-0.62],[1660,-0.70],[1680,-0.66],[1700,-0.55],[1720,-0.40],[1740,-0.35],[1760,-0.45],[1780,-0.40],[1800,-0.46],[1810,-0.56],[1816,-0.62],[1820,-0.42],[1840,-0.40],[1860,-0.34],[1880,-0.30],[1900,-0.20],[1910,-0.26],[1920,-0.10],[1940,0.05],[1950,0.00],[1960,0.00],[1970,0.02],[1980,0.16],[1990,0.30],[2000,0.45],[2008,0.52]];
   histPrec = [[1421,2],[1450,-3],[1480,4],[1510,-2],[1540,-5],[1570,1],[1600,-6],[1630,-3],[1660,-7],[1690,-4],[1720,2],[1750,3],[1780,-1],[1800,-3],[1816,-8],[1820,-5],[1840,0],[1860,2],[1880,-2],[1900,1],[1920,3],[1940,-1],[1960,2],[1980,0],[2000,-3],[2008,-4]];
   histPres = [[1421,0.5],[1450,-0.8],[1480,0.3],[1510,1.0],[1540,-0.5],[1570,0.6],[1600,-1.2],[1630,0.4],[1660,-1.5],[1690,-0.7],[1720,0.8],[1750,1.1],[1780,-0.3],[1800,-0.6],[1820,-1.0],[1840,0.2],[1860,0.7],[1880,-0.4],[1900,0.3],[1920,0.9],[1940,0.1],[1960,0.5],[1980,-0.2],[2000,0.6],[2008,0.8]];
@@ -1978,9 +1980,9 @@ class PaleoApp extends React.Component {
       backToArchives: () => this.setState({ archiveId: null }),
       isSpecies: screen === 'species',
       goSpecies: () => this.setState({ screen: 'species', speciesId: null, menuOpen: false }),
-      speciesCards: this.species.map(s => ({ ...s, open: () => this.setState({ speciesId: s.id }) })),
+      speciesCards: this.species.map(s => ({ ...s, img: this.bioImg(s.id), open: () => this.setState({ speciesId: s.id }) })),
       speciesList: !this.state.speciesId,
-      sp: this.state.speciesId ? this.species.find(s => s.id === this.state.speciesId) : null,
+      sp: this.state.speciesId ? (() => { const s = this.species.find(x => x.id === this.state.speciesId); return s ? { ...s, img: this.bioImg(s.id) } : null; })() : null,
       backToSpecies: () => this.setState({ speciesId: null }),
       isExtinct: screen === 'extinct',
       goExtinct: () => this.setState({ screen: 'extinct', extinctId: null, menuOpen: false }),
@@ -1989,6 +1991,7 @@ class PaleoApp extends React.Component {
       backToExtinct: () => this.setState({ extinctId: null }),
       extinctCards: this.extinctSp.map(e => ({
         id: e.id, name: e.name, taxon: e.taxon, emoji: e.emoji, wash: e.wash, accent: e.accent, period: e.period, dates: e.dates,
+        img: this.bioImg(e.id),
         badge: e.fate === 'extinct' ? 'Éteinte' : 'Lignée survivante',
         badgeStyle: this.extinctBadge(e.fate),
         open: () => this.setState({ extinctId: e.id })
@@ -1999,6 +2002,7 @@ class PaleoApp extends React.Component {
         const isExt = e.fate === 'extinct';
         return {
           ...e,
+          img: this.bioImg(e.id),
           slot: 'ext-' + e.id, ph: 'Déposez une illustration de ' + e.name,
           badge: isExt ? 'Éteinte' : 'Lignée survivante',
           badgeStyle: this.extinctBadge(e.fate),
@@ -2023,9 +2027,9 @@ class PaleoApp extends React.Component {
       })(),
       isFossils: screen === 'fossils',
       goFossils: () => this.setState({ screen: 'fossils', fossilId: null, menuOpen: false }),
-      fossilCards: this.fossils.map(f => ({ ...f, open: () => this.setState({ fossilId: f.id }) })),
+      fossilCards: this.fossils.map(f => ({ ...f, img: this.bioImg(f.id), open: () => this.setState({ fossilId: f.id }) })),
       fossilList: !this.state.fossilId,
-      fo: this.state.fossilId ? this.fossils.find(f => f.id === this.state.fossilId) : null,
+      fo: this.state.fossilId ? (() => { const f = this.fossils.find(x => x.id === this.state.fossilId); return f ? { ...f, img: this.bioImg(f.id) } : null; })() : null,
       backToFossils: () => this.setState({ fossilId: null }),
       isGlaciations: screen === 'glaciations',
       goGlaciations: () => this.setState({ screen: 'glaciations', glacId: this.state.glacId || 'cryo', menuOpen: false }),

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs>
+    <linearGradient id="st-t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4038"/><stop offset="0.7" stop-color="#6d5f4e"/><stop offset="1" stop-color="#8a7a63"/></linearGradient>
+  </defs>
+  <rect width="240" height="160" fill="#ded2b6"/>
+  <rect width="240" height="160" fill="#e7ddc6" opacity="0.5"/>
+  <!-- matrice rocheuse -->
+  <g opacity="0.25" stroke="#9c8a66" stroke-width="1.4" fill="none"><path d="M0 40 Q120 30 240 44 M0 120 Q120 112 240 126"/></g>
+  <!-- dent triangulaire, racine + couronne -->
+  <g transform="translate(120,84)">
+    <path d="M0,-58 L38,44 Q0,58 -38,44 Z" fill="url(#st-t)"/>
+    <!-- couronne émaillée -->
+    <path d="M0,-58 L30,30 Q0,42 -30,30 Z" fill="#7f7160"/>
+    <path d="M0,-56 L10,-20 L-8,-10 Z" fill="#a99a82" opacity="0.6"/>
+    <!-- bord dentelé -->
+    <path d="M0,-58 L38,44 Q0,58 -38,44 Z" fill="none" stroke="#3a3229" stroke-width="2"/>
+    <g stroke="#3a3229" stroke-width="1.2">
+      <path d="M20,-6 l4,2 M24,4 l4,2 M28,14 l4,2 M31,24 l4,2 M-20,-6 l-4,2 M-24,4 l-4,2 M-28,14 l-4,2 M-31,24 l-4,2"/>
+    </g>
+  </g>
+</svg>

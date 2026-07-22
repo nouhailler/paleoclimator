@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs><linearGradient id="co-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe6ec"/><stop offset="1" stop-color="#6fb2c0"/></linearGradient></defs>
+  <rect width="240" height="160" fill="url(#co-bg)"/>
+  <!-- rayons de lumière -->
+  <g opacity="0.18" fill="#ffffff"><polygon points="60,0 76,0 64,160 52,160"/><polygon points="140,0 152,0 150,160 132,160"/></g>
+  <!-- fond sableux -->
+  <path d="M0,140 Q120,128 240,142 L240,160 L0,160 Z" fill="#e7d9b8"/>
+  <!-- colonie de corail branchu -->
+  <g stroke="#c56f7a" stroke-linecap="round" fill="none">
+    <path d="M120,144 V96" stroke-width="14"/>
+    <path d="M120,116 q-20,-8 -30,-30 M120,110 q22,-6 34,-26 M120,120 q-30,-2 -44,10 M120,118 q30,0 46,10" stroke-width="10"/>
+    <path d="M90,86 q-6,-16 2,-28 M154,84 q8,-14 4,-30 M76,130 q-16,-6 -22,-18 M166,128 q16,-6 22,-18" stroke-width="8"/>
+  </g>
+  <g fill="#e59aa2">
+    <circle cx="92" cy="58" r="6"/><circle cx="158" cy="54" r="6"/><circle cx="54" cy="112" r="5"/><circle cx="188" cy="110" r="5"/><circle cx="120" cy="94" r="6"/>
+  </g>
+  <!-- corallites (points clairs) -->
+  <g fill="#f7d7db" opacity="0.8"><circle cx="92" cy="58" r="2"/><circle cx="158" cy="54" r="2"/><circle cx="120" cy="94" r="2"/></g>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs><linearGradient id="tr-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe6cf"/><stop offset="1" stop-color="#cbb488"/></linearGradient></defs>
+  <rect width="240" height="160" fill="url(#tr-bg)"/>
+  <g opacity="0.3" stroke="#9c8258" stroke-width="1.5" fill="none"><path d="M0 138 H240 M0 150 H240"/></g>
+  <g transform="translate(120,80)">
+    <!-- corps ovale -->
+    <ellipse cx="0" cy="0" rx="42" ry="58" fill="#a8763a"/>
+    <ellipse cx="0" cy="0" rx="42" ry="58" fill="none" stroke="#7d5626" stroke-width="2.5"/>
+    <!-- céphalon -->
+    <path d="M-42,-30 Q0,-72 42,-30 L38,-14 Q0,-40 -38,-14 Z" fill="#b9843f"/>
+    <circle cx="-16" cy="-38" r="4" fill="#5c3d18"/><circle cx="16" cy="-38" r="4" fill="#5c3d18"/>
+    <!-- lobes : deux sillons longitudinaux -->
+    <path d="M-14,-58 V56 M14,-58 V56" stroke="#7d5626" stroke-width="2" fill="none"/>
+    <!-- segments thorax -->
+    <g stroke="#7d5626" stroke-width="2" fill="none">
+      <path d="M-40,-8 H40 M-41,2 H41 M-41,12 H41 M-40,22 H40 M-38,32 H38 M-34,42 H34"/>
+    </g>
+    <!-- pygidium -->
+    <path d="M-30,50 Q0,74 30,50" fill="#b9843f" stroke="#7d5626" stroke-width="2"/>
+  </g>
+</svg>

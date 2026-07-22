@@ -1,34 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="bga" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#0e2a3c"/>
       <stop offset="1" stop-color="#15384e"/>
     </linearGradient>
-    <linearGradient id="ocean" x1="0.15" y1="0.1" x2="0.85" y2="0.95">
+    <linearGradient id="oceana" x1="0.15" y1="0.1" x2="0.85" y2="0.95">
       <stop offset="0" stop-color="#8fd8ec"/>
       <stop offset="0.45" stop-color="#3f9dc4"/>
       <stop offset="1" stop-color="#0f3a54"/>
     </linearGradient>
-    <radialGradient id="sheen" cx="0.34" cy="0.28" r="0.7">
+    <radialGradient id="sheena" cx="0.34" cy="0.28" r="0.7">
       <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
       <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.06"/>
       <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
     </radialGradient>
-    <clipPath id="globeClip"><circle cx="256" cy="256" r="150"/></clipPath>
+    <clipPath id="globeClipA"><circle cx="256" cy="256" r="150"/></clipPath>
   </defs>
 
-  <!-- Fond arrondi -->
-  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- Fond plein opaque (iOS ne gère pas la transparence : évite les coins noirs) -->
+  <rect width="512" height="512" fill="url(#bga)"/>
 
-  <!-- Océan (globe) -->
-  <circle cx="256" cy="256" r="150" fill="url(#ocean)"/>
-
-  <g clip-path="url(#globeClip)">
-    <!-- Calotte glaciaire (clin d'œil paléoclimat) -->
+  <circle cx="256" cy="256" r="150" fill="url(#oceana)"/>
+  <g clip-path="url(#globeClipA)">
     <ellipse cx="256" cy="118" rx="132" ry="40" fill="#eef7fb" opacity="0.92"/>
     <ellipse cx="256" cy="134" rx="150" ry="22" fill="#eef7fb" opacity="0.35"/>
-
-    <!-- Grille : parallèles & méridiens -->
     <g stroke="#eaf7fd" stroke-opacity="0.5" stroke-width="3" fill="none">
       <line x1="106" y1="256" x2="406" y2="256"/>
       <ellipse cx="256" cy="256" rx="150" ry="66"/>
@@ -37,9 +32,6 @@
       <ellipse cx="256" cy="256" rx="116" ry="150"/>
     </g>
   </g>
-
-  <!-- Reflet spéculaire -->
-  <circle cx="256" cy="256" r="150" fill="url(#sheen)"/>
-  <!-- Liseré -->
+  <circle cx="256" cy="256" r="150" fill="url(#sheena)"/>
   <circle cx="256" cy="256" r="150" fill="none" stroke="#bfe6f3" stroke-opacity="0.65" stroke-width="4"/>
 </svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0e2a3c"/>
+      <stop offset="1" stop-color="#15384e"/>
+    </linearGradient>
+    <linearGradient id="oceanm" x1="0.15" y1="0.1" x2="0.85" y2="0.95">
+      <stop offset="0" stop-color="#8fd8ec"/>
+      <stop offset="0.45" stop-color="#3f9dc4"/>
+      <stop offset="1" stop-color="#0f3a54"/>
+    </linearGradient>
+    <radialGradient id="sheenm" cx="0.34" cy="0.28" r="0.7">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="globeClipM"><circle cx="256" cy="256" r="126"/></clipPath>
+  </defs>
+
+  <!-- Fond plein, bord à bord (Android applique son propre masque) -->
+  <rect width="512" height="512" fill="url(#bgm)"/>
+
+  <!-- Globe réduit dans la zone de sécurité (rayon &lt; 205) -->
+  <circle cx="256" cy="256" r="126" fill="url(#oceanm)"/>
+
+  <g clip-path="url(#globeClipM)">
+    <ellipse cx="256" cy="140" rx="111" ry="34" fill="#eef7fb" opacity="0.92"/>
+    <ellipse cx="256" cy="153" rx="126" ry="19" fill="#eef7fb" opacity="0.35"/>
+    <g stroke="#eaf7fd" stroke-opacity="0.5" stroke-width="2.6" fill="none">
+      <line x1="130" y1="256" x2="382" y2="256"/>
+      <ellipse cx="256" cy="256" rx="126" ry="55"/>
+      <ellipse cx="256" cy="256" rx="126" ry="101"/>
+      <ellipse cx="256" cy="256" rx="50" ry="126"/>
+      <ellipse cx="256" cy="256" rx="97" ry="126"/>
+    </g>
+  </g>
+
+  <circle cx="256" cy="256" r="126" fill="url(#sheenm)"/>
+  <circle cx="256" cy="256" r="126" fill="none" stroke="#bfe6f3" stroke-opacity="0.65" stroke-width="3.4"/>
+</svg>

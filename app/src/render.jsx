@@ -253,52 +253,112 @@ export function renderApp(v, self) {
           </React.Fragment>)) }
         </div>
 
-        <div style={css(`background:#fff;border:1px solid #e0eaef;border-radius:12px;padding:8px 10px 4px;margin-bottom:8px`)}>
-          <div style={css(`display:flex;justify-content:space-between;margin-bottom:1px`)}>
-            <div style={css(`font-size:10px;font-weight:600;color:#d97a52`)}>Température globale (°C)</div>
+        <div style={css(`position:relative;background:#fff;border:1px solid #e0eaef;border-radius:12px;padding:8px 10px 4px;margin-bottom:8px`)}>
+          <div style={css(`display:flex;justify-content:space-between;align-items:center;margin-bottom:1px`)}>
+            <div style={css(`display:flex;align-items:center;gap:6px`)}>
+              <div style={css(`font-size:10px;font-weight:600;color:#d97a52`)}>Température globale (°C)</div>
+              { v.tmDeep ? (<div onClick={() => v.tmInfoToggle('temp')} title="Pourquoi si plat ?" style={css(`width:15px;height:15px;border-radius:50%;background:#eef4f7;border:1px solid #c4d7e0;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;color:#5b7688;cursor:pointer`)}>i</div>) : null }
+            </div>
             <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:8px;color:#8aa5b3`)}>5 – 28</div>
           </div>
           <svg viewBox="0 0 320 82" style={css(`width:100%;display:block`)}>
+            { v.tmDeep ? (<>
+              <rect x="8" y="8" width={v.tmPreW} height="66" fill="#0f2c3c" opacity="0.05"></rect>
+              <line x1={v.tmPreX} y1="8" x2={v.tmPreX} y2="74" stroke="#9bb4c2" strokeWidth="1" strokeDasharray="2 3"></line>
+              <text x="11" y="18" fontFamily="'IBM Plex Mono',monospace" fontSize="8" fill="#8aa5b3">Précambrien · données rares</text>
+            </>) : null }
             <path d={v.tmTempPath} fill="none" stroke="#d97a52" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"></path>
             <line x1={v.tmScrubX} y1="8" x2={v.tmScrubX} y2="74" stroke="#0f2c3c" strokeWidth="1" strokeDasharray="3 3"></line>
             <circle cx={v.tmScrubX} cy={v.tmTempMarkY} r="3.5" fill="#fff" stroke="#d97a52" strokeWidth="2"></circle>
           </svg>
+          { v.tmInfoOpen === 'temp' ? (<>
+            <div onClick={v.tmCloseInfo} style={css(`position:absolute;z-index:6;top:26px;left:10px;right:10px;background:#0f2c3c;color:#eaf3f7;border-radius:9px;padding:10px 12px;box-shadow:0 6px 20px rgba(8,24,34,0.35);cursor:pointer`)}>
+              <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.6px;text-transform:uppercase;color:#8fb4c6;margin-bottom:4px`)}>Temps profond · avant 541 Ma</div>
+              <div style={css(`font-size:11px;line-height:1.5`)}>{v.tmInfoText.temp}</div>
+              <div style={css(`font-size:9px;color:#8fb4c6;margin-top:6px`)}>Touchez pour fermer</div>
+            </div>
+          </>) : null }
         </div>
 
-        <div style={css(`background:#fff;border:1px solid #e0eaef;border-radius:12px;padding:8px 10px 4px;margin-bottom:8px`)}>
-          <div style={css(`display:flex;justify-content:space-between;margin-bottom:1px`)}>
-            <div style={css(`font-size:10px;font-weight:600;color:#1d6f96`)}>CO₂ atmosphérique (ppm, log)</div>
+        <div style={css(`position:relative;background:#fff;border:1px solid #e0eaef;border-radius:12px;padding:8px 10px 4px;margin-bottom:8px`)}>
+          <div style={css(`display:flex;justify-content:space-between;align-items:center;margin-bottom:1px`)}>
+            <div style={css(`display:flex;align-items:center;gap:6px`)}>
+              <div style={css(`font-size:10px;font-weight:600;color:#1d6f96`)}>CO₂ atmosphérique (ppm, log)</div>
+              { v.tmDeep ? (<div onClick={() => v.tmInfoToggle('co2')} title="Pourquoi si plat ?" style={css(`width:15px;height:15px;border-radius:50%;background:#eef4f7;border:1px solid #c4d7e0;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;color:#5b7688;cursor:pointer`)}>i</div>) : null }
+            </div>
             <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:8px;color:#8aa5b3`)}>150 – 30 000</div>
           </div>
           <svg viewBox="0 0 320 82" style={css(`width:100%;display:block`)}>
+            { v.tmDeep ? (<>
+              <rect x="8" y="8" width={v.tmPreW} height="66" fill="#0f2c3c" opacity="0.05"></rect>
+              <line x1={v.tmPreX} y1="8" x2={v.tmPreX} y2="74" stroke="#9bb4c2" strokeWidth="1" strokeDasharray="2 3"></line>
+              <text x="11" y="18" fontFamily="'IBM Plex Mono',monospace" fontSize="8" fill="#8aa5b3">Précambrien · données rares</text>
+            </>) : null }
             <path d={v.tmCo2Path} fill="none" stroke="#1d6f96" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"></path>
             <line x1={v.tmScrubX} y1="8" x2={v.tmScrubX} y2="74" stroke="#0f2c3c" strokeWidth="1" strokeDasharray="3 3"></line>
             <circle cx={v.tmScrubX} cy={v.tmCo2MarkY} r="3.5" fill="#fff" stroke="#1d6f96" strokeWidth="2"></circle>
           </svg>
+          { v.tmInfoOpen === 'co2' ? (<>
+            <div onClick={v.tmCloseInfo} style={css(`position:absolute;z-index:6;top:26px;left:10px;right:10px;background:#0f2c3c;color:#eaf3f7;border-radius:9px;padding:10px 12px;box-shadow:0 6px 20px rgba(8,24,34,0.35);cursor:pointer`)}>
+              <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.6px;text-transform:uppercase;color:#8fb4c6;margin-bottom:4px`)}>Temps profond · avant 541 Ma</div>
+              <div style={css(`font-size:11px;line-height:1.5`)}>{v.tmInfoText.co2}</div>
+              <div style={css(`font-size:9px;color:#8fb4c6;margin-top:6px`)}>Touchez pour fermer</div>
+            </div>
+          </>) : null }
         </div>
 
-        <div style={css(`background:#fff;border:1px solid #e0eaef;border-radius:12px;padding:8px 10px 4px;margin-bottom:8px`)}>
-          <div style={css(`display:flex;justify-content:space-between;margin-bottom:1px`)}>
-            <div style={css(`font-size:10px;font-weight:600;color:#2f9e6f`)}>Niveau marin relatif (m)</div>
+        <div style={css(`position:relative;background:#fff;border:1px solid #e0eaef;border-radius:12px;padding:8px 10px 4px;margin-bottom:8px`)}>
+          <div style={css(`display:flex;justify-content:space-between;align-items:center;margin-bottom:1px`)}>
+            <div style={css(`display:flex;align-items:center;gap:6px`)}>
+              <div style={css(`font-size:10px;font-weight:600;color:#2f9e6f`)}>Niveau marin relatif (m)</div>
+              { v.tmDeep ? (<div onClick={() => v.tmInfoToggle('sea')} title="Pourquoi si plat ?" style={css(`width:15px;height:15px;border-radius:50%;background:#eef4f7;border:1px solid #c4d7e0;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;color:#5b7688;cursor:pointer`)}>i</div>) : null }
+            </div>
             <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:8px;color:#8aa5b3`)}>−130 – +260</div>
           </div>
           <svg viewBox="0 0 320 82" style={css(`width:100%;display:block`)}>
+            { v.tmDeep ? (<>
+              <rect x="8" y="8" width={v.tmPreW} height="66" fill="#0f2c3c" opacity="0.05"></rect>
+              <line x1={v.tmPreX} y1="8" x2={v.tmPreX} y2="74" stroke="#9bb4c2" strokeWidth="1" strokeDasharray="2 3"></line>
+              <text x="11" y="18" fontFamily="'IBM Plex Mono',monospace" fontSize="8" fill="#8aa5b3">Précambrien · données rares</text>
+            </>) : null }
             <path d={v.tmSeaPath} fill="none" stroke="#2f9e6f" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"></path>
             <line x1={v.tmScrubX} y1="8" x2={v.tmScrubX} y2="74" stroke="#0f2c3c" strokeWidth="1" strokeDasharray="3 3"></line>
             <circle cx={v.tmScrubX} cy={v.tmSeaMarkY} r="3.5" fill="#fff" stroke="#2f9e6f" strokeWidth="2"></circle>
           </svg>
+          { v.tmInfoOpen === 'sea' ? (<>
+            <div onClick={v.tmCloseInfo} style={css(`position:absolute;z-index:6;top:26px;left:10px;right:10px;background:#0f2c3c;color:#eaf3f7;border-radius:9px;padding:10px 12px;box-shadow:0 6px 20px rgba(8,24,34,0.35);cursor:pointer`)}>
+              <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.6px;text-transform:uppercase;color:#8fb4c6;margin-bottom:4px`)}>Temps profond · avant 541 Ma</div>
+              <div style={css(`font-size:11px;line-height:1.5`)}>{v.tmInfoText.sea}</div>
+              <div style={css(`font-size:9px;color:#8fb4c6;margin-top:6px`)}>Touchez pour fermer</div>
+            </div>
+          </>) : null }
         </div>
 
-        <div style={css(`background:#fff;border:1px solid #e0eaef;border-radius:12px;padding:8px 10px 4px;margin-bottom:8px`)}>
-          <div style={css(`display:flex;justify-content:space-between;margin-bottom:1px`)}>
-            <div style={css(`font-size:10px;font-weight:600;color:#7d5bb0`)}>Biodiversité marine (genres)</div>
+        <div style={css(`position:relative;background:#fff;border:1px solid #e0eaef;border-radius:12px;padding:8px 10px 4px;margin-bottom:8px`)}>
+          <div style={css(`display:flex;justify-content:space-between;align-items:center;margin-bottom:1px`)}>
+            <div style={css(`display:flex;align-items:center;gap:6px`)}>
+              <div style={css(`font-size:10px;font-weight:600;color:#7d5bb0`)}>Biodiversité marine (genres)</div>
+              { v.tmDeep ? (<div onClick={() => v.tmInfoToggle('bio')} title="Pourquoi si plat ?" style={css(`width:15px;height:15px;border-radius:50%;background:#eef4f7;border:1px solid #c4d7e0;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;color:#5b7688;cursor:pointer`)}>i</div>) : null }
+            </div>
             <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:8px;color:#8aa5b3`)}>0 – 3000</div>
           </div>
           <svg viewBox="0 0 320 82" style={css(`width:100%;display:block`)}>
+            { v.tmDeep ? (<>
+              <rect x="8" y="8" width={v.tmPreW} height="66" fill="#0f2c3c" opacity="0.05"></rect>
+              <line x1={v.tmPreX} y1="8" x2={v.tmPreX} y2="74" stroke="#9bb4c2" strokeWidth="1" strokeDasharray="2 3"></line>
+              <text x="11" y="18" fontFamily="'IBM Plex Mono',monospace" fontSize="8" fill="#8aa5b3">Précambrien · données rares</text>
+            </>) : null }
             <path d={v.tmBioPath} fill="none" stroke="#7d5bb0" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"></path>
             <line x1={v.tmScrubX} y1="8" x2={v.tmScrubX} y2="74" stroke="#0f2c3c" strokeWidth="1" strokeDasharray="3 3"></line>
             <circle cx={v.tmScrubX} cy={v.tmBioMarkY} r="3.5" fill="#fff" stroke="#7d5bb0" strokeWidth="2"></circle>
           </svg>
+          { v.tmInfoOpen === 'bio' ? (<>
+            <div onClick={v.tmCloseInfo} style={css(`position:absolute;z-index:6;top:26px;left:10px;right:10px;background:#0f2c3c;color:#eaf3f7;border-radius:9px;padding:10px 12px;box-shadow:0 6px 20px rgba(8,24,34,0.35);cursor:pointer`)}>
+              <div style={css(`font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.6px;text-transform:uppercase;color:#8fb4c6;margin-bottom:4px`)}>Temps profond · avant 541 Ma</div>
+              <div style={css(`font-size:11px;line-height:1.5`)}>{v.tmInfoText.bio}</div>
+              <div style={css(`font-size:9px;color:#8fb4c6;margin-top:6px`)}>Touchez pour fermer</div>
+            </div>
+          </>) : null }
         </div>
 
         <input type="range" min="0" max="1000" step="1" value={v.tmScrub} onChange={v.onTmScrub} onInput={v.onTmScrub} style={css(`width:100%;accent-color:#1d6f96;margin-top:4px`)} />

@@ -9,7 +9,7 @@ import { renderApp } from "./render.jsx"
 // ============================================================================
 
 class PaleoApp extends React.Component {
-  state = { screen: 'home', menuOpen: false, eraId: 0, age: 0, tmRange: 'full', tmScrub: 1000, evt: null, mapPeriod: 'pangea', reveal: 50, pinX: 52, pinY: 46, pinLabel: 'Votre région', dragging: false, proxy: null, grow: 100, playing: false, extreme: null, dsOn: { epica: true, sea: true, lr04: true }, shiftDs: 'sea', shiftKa: 0, dCalcite: '-1.5', dWater: '0.0', eqId: 'shack', ecc: 1.67, obl: 23.44, prec: 283, season: 90, glossQ: '', glossCat: 'Tous', site: null, siteCat: 'Tous', addMode: false, userSites: [], helpOpen: false, globePeriod: 4, globeRotate: true, geoQ: '', geoSel: null, histYear: 2008, storyId: 0, extinctId: null, atlasId: null, sciId: null, catMenu: null };
+  state = { screen: 'home', menuOpen: false, eraId: 0, age: 0, tmRange: 'full', tmScrub: 1000, evt: null, mapPeriod: 'pangea', reveal: 50, pinX: 52, pinY: 46, pinLabel: 'Votre région', dragging: false, proxy: null, grow: 100, playing: false, extreme: null, dsOn: { epica: true, sea: true, lr04: true }, shiftDs: 'sea', shiftKa: 0, dCalcite: '-1.5', dWater: '0.0', eqId: 'shack', ecc: 1.67, obl: 23.44, prec: 283, season: 90, glossQ: '', glossCat: 'Tous', site: null, siteCat: 'Tous', addMode: false, userSites: [], helpOpen: false, globePeriod: 4, globeRotate: true, geoQ: '', geoSel: null, histYear: 2008, storyId: 0, extinctId: null, atlasId: null, sciId: null, catMenu: null, tmInfo: null };
   globeRef = React.createRef();
   mapRef = React.createRef();
   cmpRef = React.createRef();
@@ -2116,8 +2116,8 @@ class PaleoApp extends React.Component {
       menuPanelStyle: { position: 'absolute', top: 0, left: 0, bottom: 0, width: '80%', maxWidth: 300, background: '#0c2534', zIndex: 41, transform: menuOpen ? 'translateX(0)' : 'translateX(-102%)', transition: 'transform .28s cubic-bezier(.4,0,.2,1)', boxShadow: '8px 0 30px rgba(0,0,0,0.35)', display: 'flex', flexDirection: 'column' },
       // time machine
       tmRange, tmScrub,
-      setFull: () => this.setState({ tmRange: 'full' }),
-      setPhan: () => this.setState({ tmRange: 'phan' }),
+      setFull: () => this.setState({ tmRange: 'full', tmInfo: null }),
+      setPhan: () => this.setState({ tmRange: 'phan', tmInfo: null }),
       onTmScrub: (e) => this.setState({ tmScrub: +e.target.value }),
       rangeFullStyle: this.rangeBtn(tmRange !== 'phan'),
       rangePhanStyle: this.rangeBtn(tmRange === 'phan'),
@@ -2130,6 +2130,19 @@ class PaleoApp extends React.Component {
       tmSeaPath: this.cpath(this.cSea, maxAge, v => this.mSea(v)),
       tmBioPath: this.cpath(this.cBio, maxAge, v => this.mBio(v)),
       tmTempMarkY: this.mTemp(tT), tmCo2MarkY: this.mCo2(tC), tmSeaMarkY: this.mSea(tS), tmBioMarkY: this.mBio(tB),
+      // Temps profond : bande Précambrien + popover « peu de données » sur chaque graphe
+      tmDeep: tmRange !== 'phan',
+      tmPreX: this.tX(541, maxAge),            // frontière 541 Ma (Précambrien | Phanérozoïque)
+      tmPreW: this.tX(541, maxAge) - this.tX(maxAge, maxAge),
+      tmInfoOpen: this.state.tmInfo,
+      tmInfoToggle: (id) => this.setState(s => ({ tmInfo: s.tmInfo === id ? null : id })),
+      tmCloseInfo: () => this.setState({ tmInfo: null }),
+      tmInfoText: {
+        temp: "Avant 541 Ma, la température globale n'est reconstruite que très grossièrement (δ¹⁸O rares, datations incertaines). Aucune variation fine documentée ici — hormis les glaciations globales du Cryogénien. La courbe est indicative.",
+        co2: "Le CO₂ précambrien provient de modèles (GEOCARB) et de paléosols : valeurs très élevées mais peu contraintes. Le seul grand repère est la Grande Oxydation (~2,4 Ga) ; le reste est lissé, faute de mesures.",
+        sea: "Le niveau marin relatif n'est pas reconstruit avant le Phanérozoïque. La courbe est mise à plat par convention : aucun événement remarquable n'est documenté sur cette période.",
+        bio: "La biodiversité animale ne décolle qu'à l'explosion cambrienne (541 Ma). Avant, la vie est essentiellement microbienne : quasi rien à dénombrer — la courbe reste au ras de zéro.",
+      },
       // event sheet
       evtOpen: !!evt, evtCat: evt && evt.cat, evtTitle: evt && evt.title, evtBody: evt && evt.body,
       evtColor: evt && evt.color, evtAgeTxt: evt && this.fmtAge(evt.age),

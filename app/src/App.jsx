@@ -2,6 +2,8 @@ import React from "react"
 import { css } from "./css"
 import ImageSlot from "./ImageSlot.jsx"
 import { renderApp } from "./render.jsx"
+import { Engine } from "./demo/engine"
+import { getScenario, SCENARIO_LIST } from "./demo/scenarios/index"
 
 // ============================================================================
 //  Paleoclim -- coeur logique porte depuis le prototype (Paleoclim.dc.html).
@@ -9,13 +11,40 @@ import { renderApp } from "./render.jsx"
 // ============================================================================
 
 class PaleoApp extends React.Component {
-  state = { screen: 'home', menuOpen: false, eraId: 0, age: 0, tmRange: 'full', tmScrub: 1000, evt: null, mapPeriod: 'pangea', reveal: 50, pinX: 52, pinY: 46, pinLabel: 'Votre région', dragging: false, proxy: null, grow: 100, playing: false, extreme: null, dsOn: { epica: true, sea: true, lr04: true }, shiftDs: 'sea', shiftKa: 0, dCalcite: '-1.5', dWater: '0.0', eqId: 'shack', ecc: 1.67, obl: 23.44, prec: 283, season: 90, glossQ: '', glossCat: 'Tous', site: null, siteCat: 'Tous', addMode: false, userSites: [], helpOpen: false, globePeriod: 4, globeRotate: true, geoQ: '', geoSel: null, histYear: 2008, storyId: 0, extinctId: null, atlasId: null, sciId: null, catMenu: null, tmInfo: null, pinSugOpen: false };
+  state = { screen: 'home', menuOpen: false, eraId: 0, age: 0, tmRange: 'full', tmScrub: 1000, evt: null, mapPeriod: 'pangea', reveal: 50, pinX: 52, pinY: 46, pinLabel: 'Votre région', dragging: false, proxy: null, grow: 100, playing: false, extreme: null, dsOn: { epica: true, sea: true, lr04: true }, shiftDs: 'sea', shiftKa: 0, dCalcite: '-1.5', dWater: '0.0', eqId: 'shack', ecc: 1.67, obl: 23.44, prec: 283, season: 90, glossQ: '', glossCat: 'Tous', site: null, siteCat: 'Tous', addMode: false, userSites: [], helpOpen: false, globePeriod: 4, globeRotate: true, geoQ: '', geoSel: null, histYear: 2008, storyId: 0, extinctId: null, atlasId: null, sciId: null, catMenu: null, tmInfo: null, pinSugOpen: false, glossId: null };
   globeRef = React.createRef();
   mapRef = React.createRef();
   cmpRef = React.createRef();
   scrollRef = React.createRef();
-  componentWillUnmount() { clearInterval(this.timer); if (this.globePoll) clearInterval(this.globePoll); this.disposeGlobe(); }
-  componentDidMount() { if (this.state.screen === 'globe') this.tryInitGlobe(); }
+  componentWillUnmount() { clearInterval(this.timer); if (this.globePoll) clearInterval(this.globePoll); this.disposeGlobe(); if (this.demo) this.demo.stop(); }
+  componentDidMount() {
+    if (this.state.screen === 'globe') this.tryInitGlobe();
+    const demoId = new URLSearchParams(window.location.search).get('demo');
+    if (demoId && getScenario(demoId)) setTimeout(() => this.startDemo(demoId), 400);
+  }
+
+  // ── Mode démo : pont app ↔ moteur (DemoHost) ──
+  // « Store réel » protégé : snapshot avant démo, restore à la sortie ; seed en mémoire, jamais persisté.
+  demoHost = {
+    get root() { return document.getElementById('root') || document.body; },
+    get reducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; },
+    navigate: (screen) => new Promise((res) => {
+      this.setState({ screen, menuOpen: false, catMenu: null, helpOpen: false }, () => {
+        if (this.scrollRef && this.scrollRef.current) this.scrollRef.current.scrollTop = 0;
+        res();
+      });
+    }),
+    snapshot: () => ({ ...this.state }),
+    restore: (snap) => { if (snap) this.setState(snap); },
+    applySeed: (seed) => { if (seed && seed.userSites) this.setState({ userSites: seed.userSites }); },
+  };
+  startDemo(id) {
+    const sc = getScenario(id);
+    if (!sc) return;
+    if (!this.demo) this.demo = new Engine(this.demoHost);
+    this.demo.load(sc);
+    this.demo.play();
+  }
   componentDidUpdate(pp, ps) {
     if (this.state.screen === 'globe') {
       this.tryInitGlobe();
@@ -445,8 +474,56 @@ class PaleoApp extends React.Component {
     { term:'Optimum climatique', cat:'Concepts', def:"Intervalle particulièrement chaud d'une période (ex. optimum de l'Holocène, optimum du Miocène moyen)." },
     { term:'Anoxie / Euxinie', cat:'Concepts', def:"Absence d'oxygène (anoxie) voire présence de sulfure d'hydrogène (euxinie) dans l'eau ; conditions léthales associées à des crises." },
     { term:'Sapropèle', cat:'Proxies', def:"Couche sédimentaire sombre riche en matière organique (ex. Méditerranée), déposée lors d'épisodes d'anoxie de fond." },
-    { term:'Isochrone', cat:'Méthodes', def:"Surface ou ligne de même âge dans une archive, servant à corréler les enregistrements entre eux." }
+    { term:'Isochrone', cat:'Méthodes', def:"Surface ou ligne de même âge dans une archive, servant à corréler les enregistrements entre eux." },
+    { term:'PETM', cat:'Événements', def:"Maximum thermique Paléocène–Éocène (~56 Ma) : réchauffement global de +5 à +8 °C en quelques millénaires, dû à une injection massive de carbone. Analogue partiel du réchauffement actuel." },
+    { term:'Snowball Earth', cat:'Événements', def:"« Terre boule de neige » : glaciations quasi totales du Cryogénien (~720–635 Ma), avec de la glace jusqu'à l'équateur, suivies de déglaciations brutales." },
+    { term:'Sensibilité climatique', cat:'Concepts', def:"Réchauffement global à l'équilibre pour un doublement du CO₂ (~3 °C, fourchette ~2,5–4 °C). Contrainte majeure que les paléoclimats aident à préciser." },
+    { term:'Rétroaction (feedback)', cat:'Concepts', def:"Mécanisme qui amplifie (positive) ou atténue (négative) une perturbation climatique — ex. albédo de la glace, vapeur d'eau, dégazage de CO₂ océanique." },
+    { term:'Astrochronologie', cat:'Méthodes', def:"Datation des séries sédimentaires par calage sur les cycles orbitaux de Milankovitch, atteignant une résolution de l'ordre de 20 ka sur des dizaines de millions d'années." },
+    { term:'Benthique / Planctonique', cat:'Concepts', def:"Benthique = vivant sur le fond marin ; planctonique = flottant en surface. Distinction clé pour les foraminifères (fond → eaux profondes, surface → eaux de surface)." },
+    { term:'Hiatus', cat:'Méthodes', def:"Lacune sédimentaire : intervalle de temps non enregistré (érosion ou non-dépôt) qu'il faut repérer pour ne pas fausser une chronologie." }
   ];
+
+  // Notes étendues (« en pratique ») affichées dans la fiche détaillée d'un terme.
+  glossMore = {
+    'Proxy': "Aucun thermomètre n'existait au Crétacé : on lit donc des indicateurs indirects (isotopes, fossiles, sédiments) qu'on calibre sur le présent avant de les appliquer au passé. Toute reconstruction paléoclimatique repose sur des proxies.",
+    'δ¹⁸O (delta O-18)': "Dans les carottes de glace, un δ¹⁸O bas signale un climat froid ; dans les foraminifères benthiques, il reflète surtout le volume de glace mondial. C'est le proxy le plus utilisé en paléoclimatologie.",
+    'δD (deutérium)': "Comme le δ¹⁸O, le δD de la glace suit la température de condensation : plus il fait froid, plus la glace est appauvrie. Vostok et EPICA en tirent leurs courbes de paléotempérature.",
+    'Foraminifères': "On les trie sous binoculaire dans les carottes marines, puis on mesure leur δ¹⁸O et leur Mg/Ca. Les espèces de surface (planctoniques) et de fond (benthiques) racontent des étages différents de l'océan.",
+    'Cycles de Milankovitch': "Excentricité (~100 ka), obliquité (~41 ka) et précession (~23 ka) modulent l'ensoleillement par saison et latitude. Leur signature, retrouvée dans les sédiments en 1976, rythme les glaciations.",
+    'Stade isotopique marin (MIS)': "Numérotés depuis le présent (MIS 1 = Holocène), les stades pairs sont froids (glaciaires) et impairs chauds. Ils fournissent l'échelle de temps standard du Quaternaire.",
+    'Terminaison': "Les terminaisons (I, II…) sont des sorties de glaciation rapides : en quelques millénaires, le CO₂ remonte et les calottes s'effondrent. Elles marquent le passage d'un stade froid à un interglaciaire.",
+    'Événement de Heinrich': "Des couches de débris rocheux (IRD) larguées par des armadas d'icebergs jalonnent l'Atlantique Nord. Ils signent des débâcles massives de la calotte laurentidienne pendant la dernière glaciation.",
+    'Événements de Dansgaard-Oeschger': "Vus d'abord dans la glace du Groenland : des réchauffements de +8 à +15 °C en quelques décennies, répétés ~25 fois durant la dernière glaciation. La preuve du changement climatique abrupt.",
+    'Tillite': "Roche issue d'un dépôt glaciaire (till) consolidé. En trouver à basse paléolatitude a révélé les Terres « boule de neige » — un climat glaciaire là où règnent aujourd'hui déserts et tropiques.",
+    'Spéléothème': "Stalagmites et stalactites se datent très précisément à l'uranium-thorium ; leur δ¹⁸O retrace l'intensité des moussons. Les grottes chinoises en tirent 640 000 ans d'histoire climatique.",
+    'Varve': "Chaque varve = une année (couche claire d'été + couche sombre d'hiver). En les comptant, on obtient un calendrier annuel, comme les cernes des arbres — ex. le lac Suigetsu.",
+    'AMOC': "Le « tapis roulant » atlantique redistribue la chaleur vers le nord ; sa plongée d'eaux froides et salées peut ralentir brutalement (cf. Dryas récent). C'est un point de bascule surveillé.",
+    'Forçage radiatif': "Mesuré en W/m², il quantifie un déséquilibre imposé au bilan d'énergie (CO₂, Soleil, aérosols volcaniques). Positif → réchauffement, négatif → refroidissement.",
+    'Datation ¹⁴C (radiocarbone)': "Utilisable jusqu'à ~50 000 ans, elle date la matière organique par la décroissance du carbone-14. On l'étalonne sur des archives absolues (varves, spéléothèmes, cernes).",
+    'Datation U-Th': "Idéale pour les carbonates (spéléothèmes, coraux) jusqu'à ~500 000 ans, elle exploite la décroissance de l'uranium vers le thorium. Très précise, indépendante du ¹⁴C.",
+    'Loess': "Poussière éolienne empilée en couches épaisses (Chine, Europe centrale). Son alternance loess/paléosols enregistre la succession glaciaire-interglaciaire sur le continent.",
+    'PETM': "Injection massive de carbone (~56 Ma) : acidification des océans, migration des espèces vers les pôles, sols lessivés. Souvent étudié comme un analogue partiel — mais plus lent — de nos émissions.",
+    'Snowball Earth': "Attestée par des dépôts glaciaires équatoriaux surmontés de « capuchons carbonatés ». La sortie se fait par accumulation de CO₂ volcanique, réchauffant brutalement une planète gelée.",
+    'Sensibilité climatique': "Les transitions passées (déglaciations, PETM, Pliocène chaud) fournissent des points de calibration indépendants des modèles pour cerner cette valeur — d'où l'importance des paléoclimats.",
+  };
+  // Écran lié à un terme (« Voir aussi → »).
+  glossLink = {
+    'δ¹⁸O (delta O-18)': { screen: 'calc', label: 'Calculateur δ¹⁸O → T°' },
+    'Cycles de Milankovitch': { screen: 'milank', label: 'Bac à sable orbital' },
+    'Foraminifères': { screen: 'species', label: 'Espèces indicatrices' },
+    'δD (deutérium)': { screen: 'data', label: 'Carottes de glace' },
+    'Événements de Dansgaard-Oeschger': { screen: 'cores', label: 'Forages célèbres' },
+    'Tillite': { screen: 'glaciations', label: 'Les grandes glaciations' },
+    'Spéléothème': { screen: 'atlas', label: 'Atlas mondial' },
+    'AMOC': { screen: 'atlas', label: 'Atlas → Océan Atlantique' },
+    'Événement de Heinrich': { screen: 'atlas', label: 'Atlas → Océan Atlantique' },
+    'PETM': { screen: 'extremes', label: 'Événements extrêmes' },
+    'Snowball Earth': { screen: 'glaciations', label: 'Les grandes glaciations' },
+    'Forçage radiatif': { screen: 'simulator', label: 'Simulateur climatique' },
+    'Stade isotopique marin (MIS)': { screen: 'timemachine', label: 'Time-Machine' },
+    'Loess': { screen: 'atlas', label: 'Atlas → Himalaya' },
+  };
 
   proxySites = [
     { name:'EPICA Dome C', lat:-75.1, lon:123.4, cat:'Carotte de glace', region:'Antarctique', desc:"Carotte de glace de référence : 800 000 ans de CO₂ et de température." },
@@ -1215,6 +1292,34 @@ class PaleoApp extends React.Component {
     wood: { artist: 'Michael Gäbler', license: 'CC BY 3.0', source: 'https://commons.wikimedia.org/wiki/File:Polished_slice_of_petrified_wood_(Large_Image).jpg' },
   };
 
+  // Images Wikimedia Commons (régions, forages, glaciations, portraits, carte du monde). clé -> attribution.
+  wikiCredits = {
+    worldmap: { artist: 'Xofc / NASA', license: 'CC0', source: 'https://commons.wikimedia.org/wiki/File:Equirectangular-projection%2Bterminator.jpg' },
+    cores: { artist: 'Nicolle Rager-Fuller / NSF', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:Lake_Vostok_drill_2011.jpg' },
+    reg_groenland: { artist: 'NASA / MODIS', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:Sea_Ice_off_East_Coast_of_Greenland_(MODIS_2020-08-31).jpg' },
+    reg_antarctique: { artist: 'Pierre Markuse', license: 'CC BY 2.0', source: 'https://commons.wikimedia.org/wiki/File:Brunt_Ice_Shelf,_Antarctica_-_11_December_2022_(52559137901).jpg' },
+    reg_sahara: { artist: 'Fiontain', license: 'CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Algeria_Sahara_Desert_Photo_From_Drone_5.jpg' },
+    reg_amazonie: { artist: 'James Martins', license: 'CC BY 3.0', source: 'https://commons.wikimedia.org/wiki/File:Amazon_rainforest_manaus_APA_Margem_Esquerda_do_Rio_Negro_-_panoramio.jpg' },
+    reg_himalaya: { artist: 'NASA', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:Himalayas.jpg' },
+    reg_alpes: { artist: 'René Reichelt', license: 'CC0', source: 'https://commons.wikimedia.org/wiki/File:Glacier_du_Tour_(Unsplash).jpg' },
+    reg_atlantique: { artist: 'NASA / MODIS', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:Wave_clouds_in_the_central_Atlantic_Ocean_(MODIS_2016-05-01).jpg' },
+    glac_huron: { artist: 'James St. John', license: 'CC BY 2.0', source: 'https://commons.wikimedia.org/wiki/File:Metatillite_(Diamictite)_(Gowganda_Formation,_Paleoproterozoic,_2.3_Ga;_Wright_Run_Creek,_Dublin,_Ohio,_USA)_1_(46400939041).jpg' },
+    glac_cryo: { artist: 'Oleg Kuznetsov (3depix)', license: 'CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Snowball_Huronian.jpg' },
+    glac_andean: { artist: 'PinchyCC', license: 'CC BY 4.0', source: 'https://commons.wikimedia.org/wiki/File:Glacial_till_along_Rosario_Beach.jpg' },
+    glac_karoo: { artist: 'Bahudhara', license: 'CC BY-SA 3.0', source: 'https://commons.wikimedia.org/wiki/File:Selwyn_Rock_3.JPG' },
+    glac_quat: { artist: 'Hannes Grobe / AWI', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:Pleistocene_north_ice_map.jpg' },
+    sci_milankovic: { artist: 'Auteur inconnu', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:Milutin_Milankovi%C4%87.jpg' },
+    sci_agassiz: { artist: 'William Shaw Warren', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:Louis_Agassiz_H6.jpg' },
+    sci_arrhenius: { artist: 'Auguste Léon', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:1922_Svante_Arrhenius.jpg' },
+    sci_tyndall: { artist: 'John McLure Hamilton', license: 'Domaine public', source: 'https://commons.wikimedia.org/wiki/File:John_Tyndall_by_John_McLure_Hamilton.jpg' },
+    sci_broecker: { artist: 'Bruce Gilbert', license: 'CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Wally_Broecker,_c._2010.jpg' },
+    sci_lorius: { artist: 'Claude Lorius', license: 'CC BY-SA 3.0', source: 'https://commons.wikimedia.org/wiki/File:Claude.Lorius.jpg' },
+    sci_jouzel: { artist: 'G. Garitan', license: 'CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Jean_Jouzel_2019.jpg' },
+  };
+  // clé -> chemin image (ou null), et crédit formaté court.
+  wikiImg(key) { return this.wikiCredits[key] ? '/wiki/' + key + '.jpg' : null; }
+  wikiCreditTxt(key) { const c = this.wikiCredits[key]; return c ? c.artist + ' · ' + c.license + ' · Wikimedia Commons' : ''; }
+
   glaciations = [
     { id: 'huron', name: 'Glaciation huronienne', color: '#3f7fa8', wash: '#e7f1f6', slot: 'glac-huron',
       start: 2450, end: 2100, period: 'Paléoprotérozoïque',
@@ -1604,6 +1709,14 @@ class PaleoApp extends React.Component {
     const groupOrder = ['Explorer', 'Bases de données', 'Cartes & sites', 'Portraits', 'Outils d\'analyse', 'Comprendre'];
     const navGroups = groupOrder.map(g => ({ title: g, items: nav.filter(n => n.group === g).map(mkItem) }));
     const navItems = nav.map(mkItem);
+    // Groupe « Visite guidée » : lance un scénario de démo au lieu de naviguer.
+    const demoStyle = { display: 'flex', alignItems: 'center', gap: 11, padding: '10px 11px', borderRadius: 10, marginBottom: 3, cursor: 'pointer', background: 'transparent', borderLeft: '3px solid transparent' };
+    const demoIconStyle = { flexShrink: 0, width: 26, height: 26, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'IBM Plex Mono',monospace", fontSize: 12, fontWeight: 600, background: 'rgba(94,207,166,0.18)', color: '#7fd8bb' };
+    if (SCENARIO_LIST.length) navGroups.push({ title: 'Visite guidée', items: SCENARIO_LIST.map(sc => ({
+      icon: '▷', label: sc.title, sub: sc.description || 'Démo guidée automatique',
+      go: () => { this.setState({ menuOpen: false }); this.startDemo(sc.id); },
+      style: demoStyle, iconStyle: demoIconStyle,
+    })) });
 
     // Barre de catégories en bas d'écran : chaque catégorie du tiroir devient un onglet.
     const catMeta = {
@@ -1852,9 +1965,25 @@ class PaleoApp extends React.Component {
       closeSite: () => this.setState({ site: null }),
       isGlossary: screen === 'glossary',
       goGlossary: () => this.setState({ screen: 'glossary', glossQ: '', glossCat: 'Tous', menuOpen: false }),
-      glossQ, glossTerms, glossCatChips, glossCount: glossTerms.length,
+      glossQ, glossCatChips, glossCount: glossTerms.length,
+      glossTerms: glossTerms.map(g => ({ ...g, open: () => this.setState({ glossId: g.term }) })),
       glossEmpty: glossTerms.length === 0,
       onGlossQ: (e) => this.setState({ glossQ: e.target.value }),
+      glossOpen: !!this.state.glossId,
+      closeGloss: () => this.setState({ glossId: null }),
+      gl2: (() => {
+        const g = this.glossary.find(x => x.term === this.state.glossId);
+        if (!g) return { related: [] };
+        const lk = this.glossLink[g.term];
+        return {
+          term: g.term, cat: g.cat, def: g.def,
+          more: this.glossMore[g.term] || '', hasMore: !!this.glossMore[g.term],
+          related: this.glossary.filter(x => x.cat === g.cat && x.term !== g.term).slice(0, 6)
+            .map(x => ({ term: x.term, open: () => this.setState({ glossId: x.term }) })),
+          hasLink: !!lk, linkLabel: lk ? lk.label : '',
+          goLink: lk ? () => this.setState({ screen: lk.screen, glossId: null, atlasId: null, sciId: null, menuOpen: false }) : (() => {}),
+        };
+      })(),
       isMilank: screen === 'milank',
       goMilank: () => this.setState({ screen: 'milank', menuOpen: false }),
       eccVal: ecc, oblVal: obl, precVal: prec, season,
@@ -2056,7 +2185,7 @@ class PaleoApp extends React.Component {
           bandStyle: { position: 'absolute', left: 0, right: 0, top: top + '%', height: Math.max(2.4, bot - top) + '%', minHeight: 10, background: g.color, opacity: active ? 1 : 0.62, borderRadius: 4, cursor: 'pointer', border: active ? '2px solid #0f2c3c' : '2px solid transparent', transition: 'opacity .15s' },
           labelStyle: { position: 'absolute', left: 0, marginLeft: 9, top: (top + bot) / 2 + '%', transform: 'translateY(-50%)', whiteSpace: 'nowrap', fontSize: 11, fontWeight: active ? 700 : 500, color: active ? '#0f2c3c' : '#5a7688', cursor: 'pointer' } };
       }),
-      glac: this.glaciations.find(g => g.id === (this.state.glacId || 'cryo')),
+      glac: (() => { const g = this.glaciations.find(x => x.id === (this.state.glacId || 'cryo')); return g ? { ...g, img: this.wikiImg('glac_' + g.id), credit: this.wikiCreditTxt('glac_' + g.id) } : g; })(),
       isCores: screen === 'cores',
       goCores: () => this.setState({ screen: 'cores', coreId: this.state.coreId || 'epica', menuOpen: false }),
       corePins: this.cores.map(c => {
@@ -2067,6 +2196,7 @@ class PaleoApp extends React.Component {
           chipStyle: { flex: 1, textAlign: 'center', padding: '9px 4px', borderRadius: 9, cursor: 'pointer', fontSize: 11, fontWeight: 600, border: '1px solid ' + (active ? c.color : '#dbe7ec'), background: active ? c.color : '#fff', color: active ? '#fff' : '#4d6c7d' } };
       }),
       core: this.cores.find(c => c.id === (this.state.coreId || 'epica')),
+      coresImg: this.wikiImg('cores'), coresCredit: this.wikiCreditTxt('cores'),
 
       // ── Atlas mondial des sites paléoclimatiques ──
       isAtlas: screen === 'atlas',
@@ -2080,8 +2210,10 @@ class PaleoApp extends React.Component {
           open: () => this.setState({ atlasId: r.id }),
           pinStyle: { position: 'absolute', left: r.x + '%', top: r.y + '%', transform: 'translate(-50%,-50%)', width: active ? 24 : 17, height: active ? 24 : 17, borderRadius: '50%', background: r.color, border: '2.5px solid #fff', boxShadow: active ? '0 0 0 4px ' + r.color + '55, 0 2px 6px rgba(0,0,0,.4)' : '0 2px 5px rgba(0,0,0,.35)', cursor: 'pointer', zIndex: active ? 3 : 2, transition: 'all .15s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: active ? 12 : 9 } };
       }),
+      atlasWorldMap: this.wikiImg('worldmap'),
       atlasCards: this.atlasRegions.map(r => ({
         id: r.id, name: r.name, emoji: r.emoji, color: r.color, wash: r.wash, tagline: r.tagline, coords: r.coords, timespan: r.timespan,
+        img: this.wikiImg('reg_' + r.id),
         open: () => this.setState({ atlasId: r.id })
       })),
       at2: (() => {
@@ -2089,6 +2221,7 @@ class PaleoApp extends React.Component {
         if (!r) return { proxies: [], reveal: [], facts: [] };
         return {
           ...r, ph: 'Déposez une illustration de ' + r.name,
+          img: this.wikiImg('reg_' + r.id), credit: this.wikiCreditTxt('reg_' + r.id),
           revealRows: r.reveal.map(x => ({ ic: x[0], ti: x[1], tx: x[2] })),
           goSites: () => this.setState({ screen: 'sites', siteCat: r.linkCat, site: null, addMode: false, menuOpen: false }),
         };
@@ -2103,6 +2236,7 @@ class PaleoApp extends React.Component {
       sciCards: this.scientists.map(s => ({
         id: s.id, name: s.name, initials: s.initials, color: s.color, wash: s.wash,
         years: s.years, field: s.field, tagline: s.tagline, nat: s.nat,
+        photo: this.wikiImg('sci_' + s.id),
         open: () => this.setState({ sciId: s.id })
       })),
       sc2: (() => {
@@ -2110,6 +2244,7 @@ class PaleoApp extends React.Component {
         if (!s) return { bio: [], contributions: [] };
         return {
           ...s, ph: 'Déposez un portrait de ' + s.name,
+          photo: this.wikiImg('sci_' + s.id), credit: this.wikiCreditTxt('sci_' + s.id),
           bioParas: s.bio,
           contribRows: s.contributions.map(c => ({ ic: c[0], ti: c[1], tx: c[2] })),
           hasNote: !!s.note,

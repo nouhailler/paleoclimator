@@ -1402,8 +1402,9 @@ export function renderApp(v, self) {
         </div>
 
         <div>
-          <div style={css(`height:170px;border-radius:16px;overflow:hidden;background:${v.glac.wash};position:relative;border:1px solid #e0eaef;margin-bottom:14px`)}>
-            <ImageSlot ph="Déposez une carte de l'extension des glaces" fill />
+          <div style={css(`height:180px;border-radius:16px;overflow:hidden;background:${v.glac.wash};position:relative;border:1px solid #e0eaef;margin-bottom:14px`)}>
+            <img src={v.glac.img} alt={v.glac.name} style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
+            <div style={css(`position:absolute;left:0;right:0;bottom:0;padding:3px 10px;background:rgba(15,44,60,0.55);color:#dce9ef;font-size:8.5px;font-family:'IBM Plex Mono',monospace`)}>📷 {v.glac.credit}</div>
           </div>
           <div style={css(`display:flex;align-items:baseline;justify-content:space-between;gap:10px`)}>
             <div style={css(`font-family:'Spectral',serif;font-size:20px;font-weight:600;line-height:1.1;color:#0f2c3c`)}>{v.glac.name}</div>
@@ -1438,10 +1439,15 @@ export function renderApp(v, self) {
       { v.isCores ? (<>
       <div style={css(`padding:14px 14px 30px`)}>
         <div style={css(`font-family:'Spectral',serif;font-size:21px;font-weight:600;line-height:1.15`)}>Forages célèbres</div>
-        <div style={css(`font-size:11.5px;line-height:1.5;color:#4d6c7d;margin-top:5px;margin-bottom:14px`)}>Les grandes carottes de glace qui ont écrit l'histoire du climat. Touchez une épingle pour voir sa profondeur, son âge maximal et ses découvertes.</div>
+        <div style={css(`font-size:11.5px;line-height:1.5;color:#4d6c7d;margin-top:5px;margin-bottom:12px`)}>Les grandes carottes de glace qui ont écrit l'histoire du climat. Touchez une épingle pour voir sa profondeur, son âge maximal et ses découvertes.</div>
+
+        <div style={css(`height:170px;border-radius:14px;overflow:hidden;border:1px solid #e0eaef;position:relative;margin-bottom:12px;background:#dbe7ec`)}>
+          <img src={v.coresImg} alt="Forage d'une carotte de glace" style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
+          <div style={css(`position:absolute;left:0;right:0;bottom:0;padding:3px 10px;background:rgba(15,44,60,0.55);color:#dce9ef;font-size:8.5px;font-family:'IBM Plex Mono',monospace`)}>📷 {v.coresCredit}</div>
+        </div>
 
         <div style={css(`position:relative;width:100%;aspect-ratio:2 / 1;border-radius:12px;overflow:hidden;border:1px solid #cfe0e8;background:#dbe7ec;margin-bottom:12px`)}>
-          <ImageSlot ph="Déposez une carte du monde (projection équirectangulaire)" fill />
+          <img src={v.atlasWorldMap} alt="Carte du monde" style={css(`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block`)} />
           { (v.corePins || []).map((c, __k1) => (<React.Fragment key={__k1}>
             <div onClick={c.open} title={c.name} style={c.pinStyle}></div>
           </React.Fragment>)) }
@@ -1669,9 +1675,9 @@ export function renderApp(v, self) {
       { v.isGlossary ? (<>
       <div style={css(`padding:14px 14px 30px`)}>
         <div style={css(`font-family:'Spectral',serif;font-size:21px;font-weight:600;line-height:1.15`)}>Glossaire du jargon</div>
-        <div style={css(`font-size:11.5px;line-height:1.5;color:#4d6c7d;margin-top:5px`)}>Les termes qui reviennent dans les articles de paléoclimatologie, expliqués simplement.</div>
+        <div style={css(`font-size:11.5px;line-height:1.5;color:#4d6c7d;margin-top:5px`)}>Les termes qui reviennent dans les articles de paléoclimatologie, expliqués simplement. Touchez un terme pour sa fiche : contexte, termes liés et renvois.</div>
 
-        <input value={v.glossQ} onChange={v.onGlossQ} onInput={v.onGlossQ} placeholder="Rechercher un terme…" style={css(`width:100%;margin-top:14px;padding:11px 13px;border:1px solid #cfe0e8;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#0f2c3c;background:#fff;outline:none`)} />
+        <input data-demo-id="gloss-search" value={v.glossQ} onChange={v.onGlossQ} onInput={v.onGlossQ} placeholder="Rechercher un terme…" style={css(`width:100%;margin-top:14px;padding:11px 13px;border:1px solid #cfe0e8;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#0f2c3c;background:#fff;outline:none`)} />
 
         <div style={css(`display:flex;flex-wrap:wrap;gap:6px;margin-top:10px`)}>
           { (v.glossCatChips || []).map((c, __k1) => (<React.Fragment key={__k1}>
@@ -1683,12 +1689,13 @@ export function renderApp(v, self) {
 
         <div style={css(`display:flex;flex-direction:column;gap:9px`)}>
           { (v.glossTerms || []).map((g, __k1) => (<React.Fragment key={__k1}>
-            <div style={css(`background:#fff;border:1px solid #e0eaef;border-radius:11px;padding:12px 14px`)}>
+            <div data-demo-id="gloss-term" onClick={g.open} style={css(`background:#fff;border:1px solid #e0eaef;border-radius:11px;padding:12px 14px;cursor:pointer`)}>
               <div style={css(`display:flex;align-items:baseline;justify-content:space-between;gap:8px`)}>
                 <div style={css(`font-family:'Spectral',serif;font-size:15px;font-weight:600;color:#0f2c3c`)}>{g.term}</div>
                 <div style={css(`font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:#1d6f96;background:#eef6fa;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0`)}>{g.cat}</div>
               </div>
-              <div style={css(`font-size:12.5px;line-height:1.55;color:#42586a;margin-top:6px`)}>{g.def}</div>
+              <div style={css(`font-size:12.5px;line-height:1.55;color:#42586a;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden`)}>{g.def}</div>
+              <div style={css(`font-size:10px;color:#6fb2d1;font-weight:600;margin-top:5px`)}>En savoir plus →</div>
             </div>
           </React.Fragment>)) }
         </div>
@@ -1712,7 +1719,7 @@ export function renderApp(v, self) {
         </div>
 
         <div ref={v.mapRef} onClick={v.onMapTap} style={css(`position:relative;width:100%;aspect-ratio:2 / 1;border-radius:12px;overflow:hidden;border:1px solid #cfe0e8;background:#dbe7ec;cursor:${v.mapCursor}`)}>
-          <ImageSlot ph="Déposez une carte du monde (projection équirectangulaire)" fill />
+          <img src={v.atlasWorldMap} alt="Carte du monde" style={css(`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block`)} />
           { (v.mapPins || []).map((p, __k1) => (<React.Fragment key={__k1}>
             <div onClick={p.open} title={p.name} style={p.pinStyle}></div>
           </React.Fragment>)) }
@@ -1733,7 +1740,7 @@ export function renderApp(v, self) {
           </div>
         </div>
 
-        <div style={css(`margin-top:12px;padding:11px 13px;border-radius:10px;background:#12303f;color:#dce9ef;font-size:10.5px;line-height:1.55`)}>Déposez une carte du monde en projection équirectangulaire pour un positionnement fidèle des épingles (longitude −180→180, latitude 90→−90). Les sites proposés sont réels ; vos ajouts restent sur cet appareil.</div>
+        <div style={css(`margin-top:12px;padding:11px 13px;border-radius:10px;background:#12303f;color:#dce9ef;font-size:10.5px;line-height:1.55`)}>Carte du monde (NASA, projection équirectangulaire). Les sites proposés sont réels ; vos ajouts restent sur cet appareil.</div>
       </div>
       </>) : null }
 
@@ -1745,8 +1752,8 @@ export function renderApp(v, self) {
           <div style={css(`font-family:'Spectral',serif;font-size:21px;font-weight:600;line-height:1.15`)}>Atlas mondial des sites</div>
           <div style={css(`font-size:11.5px;line-height:1.5;color:#4d6c7d;margin-top:5px;margin-bottom:12px`)}>Sept grandes régions du globe, sept archives du climat : de la glace polaire au plancher océanique. Touchez une épingle ou une carte pour découvrir ce que chaque région nous apprend.</div>
 
-          <div style={css(`position:relative;width:100%;aspect-ratio:2 / 1;border-radius:12px;overflow:hidden;border:1px solid #cfe0e8;background:#dbe7ec`)}>
-            <ImageSlot ph="Déposez une carte du monde (projection équirectangulaire)" fill />
+          <div data-demo-id="atlas-worldmap" style={css(`position:relative;width:100%;aspect-ratio:2 / 1;border-radius:12px;overflow:hidden;border:1px solid #cfe0e8;background:#dbe7ec`)}>
+            <img src={v.atlasWorldMap} alt="Carte du monde" style={css(`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block`)} />
             { (v.atlasPins || []).map((p, __k1) => (<React.Fragment key={__k1}>
               <div onClick={p.open} title={p.name} style={p.pinStyle}>{p.emoji}</div>
             </React.Fragment>)) }
@@ -1754,8 +1761,8 @@ export function renderApp(v, self) {
 
           <div style={css(`display:flex;flex-direction:column;gap:11px;margin-top:14px`)}>
             { (v.atlasCards || []).map((r, __k1) => (<React.Fragment key={__k1}>
-              <div onClick={r.open} style={css(`display:flex;gap:13px;align-items:center;background:#fff;border:1px solid #e0eaef;border-radius:14px;padding:13px 14px;cursor:pointer;box-shadow:0 1px 2px rgba(15,44,60,0.05),0 8px 20px rgba(15,44,60,0.04)`)}>
-                <div style={css(`width:52px;height:52px;flex-shrink:0;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:27px;background:${r.wash}`)}>{r.emoji}</div>
+              <div data-demo-id="atlas-card" onClick={r.open} style={css(`display:flex;gap:13px;align-items:center;background:#fff;border:1px solid #e0eaef;border-radius:14px;padding:13px 14px;cursor:pointer;box-shadow:0 1px 2px rgba(15,44,60,0.05),0 8px 20px rgba(15,44,60,0.04)`)}>
+                <div style={css(`width:64px;height:56px;flex-shrink:0;border-radius:11px;overflow:hidden;background:${r.wash};position:relative`)}><img src={r.img} alt={r.name} loading="lazy" style={css(`width:100%;height:100%;object-fit:cover;display:block`)} /><div style={css(`position:absolute;bottom:2px;right:3px;font-size:15px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))`)}>{r.emoji}</div></div>
                 <div style={css(`min-width:0;flex:1`)}>
                   <div style={css(`font-family:'Spectral',serif;font-size:16px;font-weight:600;color:#0f2c3c`)}>{r.name}</div>
                   <div style={css(`font-size:11.5px;color:${r.color};margin-top:2px;line-height:1.35;font-style:italic`)}>{r.tagline}</div>
@@ -1765,7 +1772,7 @@ export function renderApp(v, self) {
               </div>
             </React.Fragment>)) }
           </div>
-          <div style={css(`margin-top:16px;padding:11px 13px;border-radius:10px;background:#12303f;color:#dce9ef;font-size:10px;line-height:1.55`)}>Déposez une carte du monde en projection équirectangulaire pour un positionnement fidèle des épingles. Régions et faits sont réels, à visée pédagogique.</div>
+          <div style={css(`margin-top:16px;padding:11px 13px;border-radius:10px;background:#12303f;color:#dce9ef;font-size:10px;line-height:1.55`)}>Fond de carte NASA (équirectangulaire) ; épingles positionnées par latitude/longitude. Régions, photos et faits sont réels, à visée pédagogique.</div>
         </div>
         </>) : null }
 
@@ -1773,9 +1780,10 @@ export function renderApp(v, self) {
         <div>
           <div onClick={v.backToAtlas} style={css(`font-size:11px;color:#38617a;font-weight:500;margin-bottom:12px;cursor:pointer`)}>‹ Tout l'atlas</div>
 
-          <div style={css(`height:170px;border-radius:16px;overflow:hidden;background:${v.at2.wash};position:relative;border:1px solid #e0eaef`)}>
-            <ImageSlot ph={v.at2.ph} fill />
-            <div style={css(`position:absolute;top:12px;left:12px;font-size:34px`)}>{v.at2.emoji}</div>
+          <div style={css(`height:180px;border-radius:16px;overflow:hidden;background:${v.at2.wash};position:relative;border:1px solid #e0eaef`)}>
+            <img src={v.at2.img} alt={v.at2.name} style={css(`width:100%;height:100%;object-fit:cover;display:block`)} />
+            <div style={css(`position:absolute;top:12px;left:12px;font-size:34px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))`)}>{v.at2.emoji}</div>
+            <div style={css(`position:absolute;left:0;right:0;bottom:0;padding:3px 10px;background:rgba(15,44,60,0.55);color:#dce9ef;font-size:8.5px;font-family:'IBM Plex Mono',monospace`)}>📷 {v.at2.credit}</div>
           </div>
           <div style={css(`margin-top:12px`)}>
             <div style={css(`font-family:'Spectral',serif;font-size:24px;font-weight:600;line-height:1.05;color:#0f2c3c`)}>{v.at2.name}</div>
@@ -1840,7 +1848,7 @@ export function renderApp(v, self) {
           <div style={css(`display:flex;flex-direction:column;gap:11px`)}>
             { (v.sciCards || []).map((s, __k1) => (<React.Fragment key={__k1}>
               <div onClick={s.open} style={css(`display:flex;gap:13px;align-items:center;background:#fff;border:1px solid #e0eaef;border-radius:14px;padding:13px 14px;cursor:pointer;box-shadow:0 1px 2px rgba(15,44,60,0.05),0 8px 20px rgba(15,44,60,0.04)`)}>
-                <div style={css(`width:52px;height:52px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:19px;font-weight:600;color:#fff;background:${s.color}`)}>{s.initials}</div>
+                <div style={css(`width:52px;height:52px;flex-shrink:0;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:19px;font-weight:600;color:#fff;background:${s.color}`)}>{ s.photo ? (<img src={s.photo} alt={s.name} loading="lazy" style={css(`width:100%;height:100%;object-fit:cover;object-position:center top;display:block`)} />) : s.initials }</div>
                 <div style={css(`min-width:0;flex:1`)}>
                   <div style={css(`font-family:'Spectral',serif;font-size:16px;font-weight:600;color:#0f2c3c`)}>{s.name}</div>
                   <div style={css(`font-size:11.5px;color:${s.color};margin-top:2px;line-height:1.35;font-style:italic`)}>{s.tagline}</div>
@@ -1850,7 +1858,7 @@ export function renderApp(v, self) {
               </div>
             </React.Fragment>)) }
           </div>
-          <div style={css(`margin-top:16px;padding:11px 13px;border-radius:10px;background:#12303f;color:#dce9ef;font-size:10px;line-height:1.55`)}>Notices biographiques synthétiques, à visée pédagogique. Déposez un portrait dans le cadre de chaque fiche.</div>
+          <div style={css(`margin-top:16px;padding:11px 13px;border-radius:10px;background:#12303f;color:#dce9ef;font-size:10px;line-height:1.55`)}>Notices biographiques synthétiques, à visée pédagogique. Portraits : Wikimedia Commons (voir crédit sur chaque fiche).</div>
         </div>
         </>) : null }
 
@@ -1858,8 +1866,11 @@ export function renderApp(v, self) {
         <div>
           <div onClick={v.backToScientists} style={css(`font-size:11px;color:#38617a;font-weight:500;margin-bottom:12px;cursor:pointer`)}>‹ Tous les portraits</div>
 
-          <div style={css(`height:186px;border-radius:16px;overflow:hidden;background:${v.sc2.wash};position:relative;border:1px solid #e0eaef`)}>
-            <ImageSlot ph={v.sc2.ph} fill />
+          <div style={css(`height:210px;border-radius:16px;overflow:hidden;background:${v.sc2.wash};position:relative;border:1px solid #e0eaef`)}>
+            { v.sc2.photo ? (<>
+              <img src={v.sc2.photo} alt={v.sc2.name} style={css(`width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block`)} />
+              <div style={css(`position:absolute;left:0;right:0;bottom:0;padding:3px 10px;background:rgba(15,44,60,0.55);color:#dce9ef;font-size:8.5px;font-family:'IBM Plex Mono',monospace`)}>📷 {v.sc2.credit}</div>
+            </>) : (<div style={css(`display:flex;align-items:center;justify-content:center;height:100%;font-family:'Spectral',serif;font-size:60px;font-weight:600;color:${v.sc2.color};opacity:.45`)}>{v.sc2.initials}</div>) }
           </div>
           <div style={css(`display:flex;align-items:center;gap:12px;margin-top:12px`)}>
             <div style={css(`width:54px;height:54px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:20px;font-weight:600;color:#fff;background:${v.sc2.color}`)}>{v.sc2.initials}</div>
@@ -1950,6 +1961,33 @@ export function renderApp(v, self) {
         </React.Fragment>)) }
       </div>
     </div>
+
+
+    { v.glossOpen ? (<>
+    <div onClick={v.closeGloss} style={css(`position:absolute;inset:0;background:rgba(8,24,34,0.55);z-index:50`)}></div>
+    <div style={css(`position:absolute;left:0;right:0;bottom:0;z-index:51;max-height:82%;overflow-y:auto;background:#fff;border-radius:18px 18px 0 0;padding:16px 18px 26px;box-shadow:0 -8px 30px rgba(0,0,0,0.28)`)}>
+      <div style={css(`width:40px;height:4px;border-radius:2px;background:#d4e0e6;margin:0 auto 14px`)}></div>
+      <div style={css(`font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#1d6f96`)}>{v.gl2.cat}</div>
+      <div style={css(`font-family:'Spectral',serif;font-size:22px;font-weight:700;margin-top:4px;line-height:1.15;color:#0f2c3c`)}>{v.gl2.term}</div>
+      <div style={css(`font-size:13.5px;line-height:1.6;color:#33505f;margin-top:11px`)}>{v.gl2.def}</div>
+      { v.gl2.hasMore ? (<div style={css(`background:#eef4f7;border-left:3px solid #6fb2d1;border-radius:0 10px 10px 0;padding:11px 13px;margin-top:12px`)}>
+        <div style={css(`font-size:8.5px;letter-spacing:.5px;text-transform:uppercase;color:#5b7688;font-weight:600;margin-bottom:5px`)}>En pratique</div>
+        <div style={css(`font-size:12.5px;line-height:1.6;color:#42586a`)}>{v.gl2.more}</div>
+      </div>) : null }
+      { v.gl2.hasLink ? (<div onClick={v.gl2.goLink} style={css(`margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#0f2c3c;color:#eaf3f7;border-radius:10px;padding:11px 13px;cursor:pointer`)}>
+        <span style={css(`font-size:12.5px;font-weight:600`)}>{v.gl2.linkLabel}</span><span style={css(`font-size:15px`)}>→</span>
+      </div>) : null }
+      { (v.gl2.related || []).length ? (<>
+        <div style={css(`font-size:8.5px;letter-spacing:.5px;text-transform:uppercase;color:#8aa5b3;font-weight:600;margin-top:16px;margin-bottom:8px`)}>Termes liés</div>
+        <div style={css(`display:flex;flex-wrap:wrap;gap:7px`)}>
+          { (v.gl2.related || []).map((r, __k1) => (<React.Fragment key={__k1}>
+            <div onClick={r.open} style={css(`font-size:11.5px;color:#33505f;background:#eef6fa;border:1px solid #d6e6ef;border-radius:20px;padding:5px 12px;cursor:pointer`)}>{r.term}</div>
+          </React.Fragment>)) }
+        </div>
+      </>) : null }
+      <div onClick={v.closeGloss} style={css(`margin-top:18px;text-align:center;padding:11px;border-radius:10px;background:#eef4f7;color:#33505f;font-size:13px;font-weight:600;cursor:pointer`)}>Fermer</div>
+    </div>
+    </>) : null }
 
 
     { v.siteOpen ? (<>
